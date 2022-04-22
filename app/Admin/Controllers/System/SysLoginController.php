@@ -2,12 +2,14 @@
 
 namespace App\Admin\Controllers\System;
 
+use App\Admin\Core\Controller\BaseController;
+
 /**
  * 登录验证
  *
  * @author zjj
  */
-class SysLoginController
+class SysLoginController extends BaseController
 {
 
     /**

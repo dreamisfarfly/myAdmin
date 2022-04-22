@@ -2,12 +2,14 @@
 
 namespace App\Admin\Controllers\System\Common;
 
+use App\Admin\Core\Controller\BaseController;
+
 /**
  * 通用请求处理
  *
  * @author zjj
  */
-class CommonController
+class CommonController extends BaseController
 {
 
     /**

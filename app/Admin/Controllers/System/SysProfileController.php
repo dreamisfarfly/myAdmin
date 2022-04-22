@@ -2,12 +2,14 @@
 
 namespace App\Admin\Controllers\System;
 
+use App\Admin\Core\Controller\BaseController;
+
 /**
  * 个人信息 业务处理
  *
  * @author zjj
  */
-class SysProfileController
+class SysProfileController extends BaseController
 {
 
     /**

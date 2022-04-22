@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers\System\Monitor;
 
+use App\Admin\Core\Controller\BaseController;
 use App\Admin\Core\Security\Authentication;
 
 /**
@@ -9,7 +10,7 @@ use App\Admin\Core\Security\Authentication;
  *
  * @author zjj
  */
-class SysUserOnlineController
+class SysUserOnlineController extends BaseController
 {
 
     /**
