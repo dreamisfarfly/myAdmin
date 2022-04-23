@@ -45,7 +45,8 @@ class ApiException extends Exception
      */
     public function render(Request $request): JsonResponse
     {
-        return AjaxResult::standardOutput($this->coreErrorCode,$this->coreMsg);
+        $ajaxResult = new AjaxResult();
+        return $ajaxResult->standardOutput($this->coreErrorCode,$this->coreMsg);
     }
 
 }

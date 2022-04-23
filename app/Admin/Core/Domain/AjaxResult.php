@@ -2,6 +2,7 @@
 
 namespace App\Admin\Core\Domain;
 
+use App\Admin\Core\Constant\CustomStatus;
 use App\Admin\Core\Constant\HttpStatus;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
@@ -15,13 +16,30 @@ class AjaxResult
 {
 
     /**
+     * put加带数据
+     * @var array
+     */
+    private array $putData = [];
+
+    /**
+     * 添加JSON返回
+     * @param $putData
+     * @return $this
+     */
+    public function put($putData): AjaxResult
+    {
+        $this->putData = $putData;
+        return $this;
+    }
+
+    /**
      * 操作成功
      * @param object|null $data
      * @return JsonResponse
      */
-    public static function success(?object $data = null): JsonResponse
+    public function success(?object $data = null): JsonResponse
     {
-        return self::standardOutput(0, '操作成功', $data);
+        return $this->standardOutput(CustomStatus::SUCCESS, '操作成功', $data);
     }
 
     /**
@@ -29,9 +47,9 @@ class AjaxResult
      * @param string $msg
      * @return JsonResponse
      */
-    public static function error(string $msg = '操作失败'): JsonResponse
+    public function error(string $msg = '操作失败'): JsonResponse
     {
-        return self::standardOutput(1, $msg);
+        return $this->standardOutput(CustomStatus::OPERATION_FAILURE, $msg);
     }
 
     /**
@@ -41,13 +59,17 @@ class AjaxResult
      * @param $data
      * @return JsonResponse
      */
-    public static function standardOutput($code, $msg, $data = null): JsonResponse
+    public function standardOutput($code, $msg, $data = null): JsonResponse
     {
-        return Response::json([
+        $jsonData = [
             'code' => $code,
             'msg' => $msg,
-            'data' => $data
-        ],HttpStatus::SUCCESS);
+        ];
+        if($data != null)
+            $jsonData['data'] = $data;
+        if(count($this->putData) != 0)
+            $jsonData = array_merge($jsonData,$this->putData);
+        return Response::json($jsonData,HttpStatus::SUCCESS);
     }
 
 }
