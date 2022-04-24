@@ -4,6 +4,9 @@ namespace App\Admin\Controllers\System;
 
 use App\Admin\Core\Controller\BaseController;
 use App\Admin\Core\Security\Authentication;
+use App\Admin\Service\System\Impl\SysRoleServiceImpl;
+use App\Admin\Service\System\ISysRoleService;
+use Illuminate\Http\JsonResponse;
 
 /**
  * 角色信息
@@ -14,11 +17,25 @@ class SysRoleController extends BaseController
 {
 
     /**
+     * @var ISysRoleService
+     */
+    private ISysRoleService $sysRoleService;
+
+    /**
+     * @param SysRoleServiceImpl $sysRoleService
+     */
+    public function __construct(SysRoleServiceImpl $sysRoleService)
+    {
+        $this->sysRoleService = $sysRoleService;
+    }
+
+    /**
      * 角色列表
      */
-    public function list()
+    public function list(): JsonResponse
     {
         Authentication::hasPermit('system:role:list');
+        return $this->getDataTable($this->sysRoleService->selectRoleList());
     }
 
     /**

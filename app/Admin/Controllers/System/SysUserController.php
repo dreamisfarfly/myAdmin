@@ -4,6 +4,10 @@ namespace App\Admin\Controllers\System;
 
 use App\Admin\Core\Controller\BaseController;
 use App\Admin\Core\Security\Authentication;
+use App\Admin\Service\System\Impl\SysUserServiceImpl;
+use App\Admin\Service\System\ISysLoginService;
+use App\Admin\Service\System\ISysUserService;
+use Illuminate\Http\JsonResponse;
 
 /**
  * 用户信息
@@ -14,11 +18,25 @@ class SysUserController extends BaseController
 {
 
     /**
+     * @var ISysUserService
+     */
+    private ISysUserService $sysUserService;
+
+    /**
+     * @param SysUserServiceImpl $sysUserService
+     */
+    public function __construct(SysUserServiceImpl $sysUserService)
+    {
+        $this->sysUserService = $sysUserService;
+    }
+
+    /**
      * 获取用户列表
      */
-    public function list()
+    public function list(): JsonResponse
     {
         Authentication::hasPermit('system:user:list');
+        return $this->getDataTable($this->sysUserService->selectUserList());
     }
 
     /**
