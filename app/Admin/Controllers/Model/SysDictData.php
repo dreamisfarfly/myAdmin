@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Admin\Controllers\Model;
+
+use App\Admin\Core\Model\BaseModel;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * 字典表 数据层
+ *
+ * @author zjj
+ */
+class SysDictData extends BaseModel
+{
+
+    /**
+     * 根据条件分页查询字典数据
+     *
+     * @return LengthAwarePaginator
+     */
+    public static function selectDictDataList(): LengthAwarePaginator
+    {
+        return self::query()->paginate();
+    }
+
+    /**
+     * 根据字典数据ID查询信息
+     *
+     * @param int $dictCode
+     * @return Builder|Model|object|null
+     */
+    public static function selectDictDataById(int $dictCode)
+    {
+        return self::query()->where('dict_code', $dictCode)->first();
+    }
+
+}

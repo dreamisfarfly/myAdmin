@@ -11,7 +11,7 @@ use Illuminate\Foundation\Http\FormRequest;
  *
  * @author zjj
  */
-class BaseRequest extends FormRequest
+abstract class BaseRequest extends FormRequest
 {
 
     /**

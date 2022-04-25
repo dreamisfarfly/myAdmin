@@ -3,6 +3,7 @@
 namespace App\Admin\Core\Controller;
 
 use App\Admin\Core\Constant\CustomStatus;
+use App\Admin\Core\Domain\AjaxResult;
 use App\Admin\Core\Domain\TableDataInfo;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -25,6 +26,16 @@ class BaseController extends Controller
     {
         $tableDataInfo = new TableDataInfo($lengthAwarePaginator->total(), $lengthAwarePaginator->items(),CustomStatus::SUCCESS,'查询成功');
         return $tableDataInfo->success();
+    }
+
+    /**
+     * 响应返回结果
+     * @param int $rows
+     * @return JsonResponse
+     */
+    public function toAjax(int $rows): JsonResponse
+    {
+        return $rows > 0 ? (new AjaxResult())->success() : (new AjaxResult())->error();
     }
 
 }

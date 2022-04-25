@@ -5,7 +5,6 @@ namespace App\Admin\Controllers\System;
 use App\Admin\Core\Controller\BaseController;
 use App\Admin\Core\Security\Authentication;
 use App\Admin\Service\System\Impl\SysUserServiceImpl;
-use App\Admin\Service\System\ISysLoginService;
 use App\Admin\Service\System\ISysUserService;
 use Illuminate\Http\JsonResponse;
 

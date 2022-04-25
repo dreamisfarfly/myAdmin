@@ -13,6 +13,11 @@ use Illuminate\Database\Eloquent\Model;
 class BaseModel extends Model
 {
 
+    protected static function paginateCustom()
+    {
+        return [];
+    }
+
     /**
      * Prepare a date for array / JSON serialization.
      *
