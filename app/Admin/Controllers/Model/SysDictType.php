@@ -74,6 +74,19 @@ class SysDictType extends BaseModel
     }
 
     /**
+     * 删除
+     *
+     * @param array $ids
+     * @return mixed
+     */
+    public static function deleteDictTypeByIds(array $ids)
+    {
+        return self::query()
+            ->whereIn('dict_id', $ids)
+            ->delete();
+    }
+
+    /**
      * 过滤参数
      * @param array $data 过滤数据
      * @return array 过滤后数据

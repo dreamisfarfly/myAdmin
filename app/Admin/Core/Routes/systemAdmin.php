@@ -63,6 +63,11 @@ Route::prefix('/system/dict/type')->group(function(){
      */
     Route::put('/{id}', 'SysDictTypeController@edit')->where('id','[0-9]+');
 
+    /**
+     * 删除
+     */
+    Route::delete('/', 'SysDictTypeController@remove');
+
 });
 
 /**

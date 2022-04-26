@@ -91,9 +91,32 @@ class SysDictTypeServiceImpl implements ISysDictTypeService
             DB::commit();
         }catch (\Exception $exception){
             DB::rollBack();
-            dd($exception->getMessage());
             throw new ParametersException('操作失败');
         }
         return $row;
+    }
+
+    /**
+     * 批量删除字典信息
+     *
+     * @param array $ids 需要删除的字典ID
+     * @return mixed 结果
+     * @throws ParametersException
+     */
+    function deleteDictTypeByIds(array $ids)
+    {
+        foreach ($ids as $id)
+        {
+            $dictType = self::selectDictTypeById($id);
+            if(SysDictData::countDictDataByType($dictType->dict_type) > 0)
+            {
+                throw new ParametersException(sprintf('%s已分配,不能删除', $dictType->dict_type));
+            }
+        }
+        $count = SysDictType::deleteDictTypeByIds($ids);
+        if($count > 0){
+
+        }
+        return $count;
     }
 }

@@ -7,6 +7,7 @@ use App\Admin\Core\Controller\BaseController;
 use App\Admin\Core\Domain\AjaxResult;
 use App\Admin\Core\Exception\ParametersException;
 use App\Admin\Core\Security\Authentication;
+use App\Admin\Request\System\Ids;
 use App\Admin\Request\System\SysDictType;
 use App\Admin\Service\System\Impl\SysDictTypeServiceImpl;
 use App\Admin\Service\System\ISysDictTypeService;
@@ -82,10 +83,12 @@ class SysDictTypeController extends BaseController
 
     /**
      * 删除字典类型
+     * @throws ParametersException
      */
-    public function remove()
+    public function remove(Ids $ids): JsonResponse
     {
         Authentication::hasPermit('system:dict:remove');
+        return $this->toAjax($this->sysDictTypeService->deleteDictTypeByIds($ids->getParamsData(['ids'])));
     }
 
     /**

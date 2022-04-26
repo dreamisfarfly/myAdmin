@@ -51,4 +51,12 @@ interface ISysDictTypeService
      */
     function updateDictType(int $dictId, array $data);
 
+    /**
+     * 批量删除字典信息
+     *
+     * @param array $ids 需要删除的字典ID
+     * @return mixed 结果
+     */
+    function deleteDictTypeByIds(array $ids);
+
 }
