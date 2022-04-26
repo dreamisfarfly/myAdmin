@@ -2,7 +2,7 @@
 
 namespace App\Admin\Service\System\Impl;
 
-use App\Admin\Controllers\Model\SysDictData;
+use App\Admin\Model\SysDictData;
 use App\Admin\Service\System\ISysDictDataService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;

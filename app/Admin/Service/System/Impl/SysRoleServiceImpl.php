@@ -2,7 +2,7 @@
 
 namespace App\Admin\Service\System\Impl;
 
-use App\Admin\Controllers\Model\SysRole;
+use App\Admin\Model\SysRole;
 use App\Admin\Service\System\ISysRoleService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 

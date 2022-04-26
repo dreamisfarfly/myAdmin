@@ -2,7 +2,7 @@
 
 namespace App\Admin\Service\System\Impl;
 
-use App\Admin\Controllers\Model\SysUser;
+use App\Admin\Model\SysUser;
 use App\Admin\Service\System\ISysUserService;
 
 /**

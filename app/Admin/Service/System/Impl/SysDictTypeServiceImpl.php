@@ -2,8 +2,8 @@
 
 namespace App\Admin\Service\System\Impl;
 
-use App\Admin\Controllers\Model\SysDictData;
-use App\Admin\Controllers\Model\SysDictType;
+use App\Admin\Model\SysDictData;
+use App\Admin\Model\SysDictType;
 use App\Admin\Core\Constant\UserConstants;
 use App\Admin\Core\Exception\ParametersException;
 use App\Admin\Service\System\ISysDictTypeService;
