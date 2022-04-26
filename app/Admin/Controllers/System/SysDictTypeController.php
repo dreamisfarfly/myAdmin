@@ -53,24 +53,31 @@ class SysDictTypeController extends BaseController
 
     /**
      * 新增字典类型
-     * @throws ParametersException
      */
     public function add(SysDictType $sysDictType): JsonResponse
     {
         Authentication::hasPermit('system:dict:add');
-        if(UserConstants::NOT_UNIQUE == $this->sysDictTypeService->checkDictTypeUnique($sysDictType->get('dictId'),$sysDictType->get('dictType')))
-        {
-            throw new ParametersException('新增字典失败，字典类型已存在');
-        }
-        return $this->toAjax($this->sysDictTypeService->insertDictType([]));
+        $sysDictTypeData = $sysDictType->getParamsData(['dictName','dictType','status','remark']);
+        $sysDictTypeData['createBy'] = 'admin';
+        $sysDictTypeData['createTime'] = date('Y-m-d H:i:s');
+        return $this->toAjax($this->sysDictTypeService->insertDictType($sysDictTypeData));
     }
 
     /**
      * 修改字典类型
+     * @throws ParametersException
      */
-    public function edit()
+    public function edit(int $id, SysDictType $sysDictType): JsonResponse
     {
         Authentication::hasPermit('system:dict:edit');
+        if(UserConstants::NOT_UNIQUE == $this->sysDictTypeService->checkDictTypeUnique($id, $sysDictType->get('dictType')))
+        {
+            throw new ParametersException('新增字典失败，字典类型已存在');
+        }
+        $sysDictTypeData = $sysDictType->getParamsData(['dictName','dictType','status','remark']);
+        $sysDictTypeData['updateBy'] = 'admin';
+        $sysDictTypeData['updateTime'] = date('Y-m-d H:i:s');
+        return $this->toAjax($this->sysDictTypeService->updateDictType($id, $sysDictTypeData));
     }
 
     /**

@@ -2,12 +2,15 @@
 
 namespace App\Admin\Service\System\Impl;
 
+use App\Admin\Controllers\Model\SysDictData;
 use App\Admin\Controllers\Model\SysDictType;
 use App\Admin\Core\Constant\UserConstants;
+use App\Admin\Core\Exception\ParametersException;
 use App\Admin\Service\System\ISysDictTypeService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * 字典 业务层
@@ -48,7 +51,7 @@ class SysDictTypeServiceImpl implements ISysDictTypeService
     function checkDictTypeUnique(int $dictId, string $dictType): bool
     {
          $dictTypeData = SysDictType::checkDictTypeUnique($dictType);
-         if($dictType != null && $dictTypeData->dictId == $dictId)
+         if($dictTypeData != null && $dictTypeData->dictId == $dictId)
          {
              return UserConstants::NOT_UNIQUE;
          }
@@ -64,5 +67,33 @@ class SysDictTypeServiceImpl implements ISysDictTypeService
     function insertDictType(array $data): bool
     {
         return SysDictType::insertDictType($data);
+    }
+
+    /**
+     * 修改保存字典类型信息
+     *
+     * @param int $dictId 字典ID
+     * @param array $data 字典类型信息
+     * @return int 结果
+     * @throws ParametersException
+     */
+    function updateDictType(int $dictId, array $data): int
+    {
+        try {
+            DB::beginTransaction();
+            $oldDict = SysDictType::selectDictTypeById($dictId);
+            SysDictData::updateDictDataType($oldDict->dict_type, $data['dictType']);
+            $row = SysDictType::updateDictType($dictId, $data);
+            if( $row > 0)
+            {
+
+            }
+            DB::commit();
+        }catch (\Exception $exception){
+            DB::rollBack();
+            dd($exception->getMessage());
+            throw new ParametersException('操作失败');
+        }
+        return $row;
     }
 }

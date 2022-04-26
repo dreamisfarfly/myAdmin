@@ -36,4 +36,20 @@ class SysDictData extends BaseModel
         return self::query()->where('dict_code', $dictCode)->first();
     }
 
+    /**
+     * 同步修改字典类型
+     *
+     * @param string $oldDictType 旧字典类型
+     * @param string $newDictType 新旧字典类型
+     * @return int 结果
+     */
+    public static function updateDictDataType(string $oldDictType, string $newDictType): int
+    {
+        return self::query()
+            ->where('dict_type', $oldDictType)
+            ->update([
+                'dict_type' => $newDictType
+            ]);
+    }
+
 }

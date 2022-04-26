@@ -49,9 +49,19 @@ Route::prefix('/system/dict/type')->group(function(){
     Route::get('/list','SysDictTypeController@list');
 
     /**
+     * 列表
+     */
+    Route::post('','SysDictTypeController@add');
+
+    /**
      * 详情
      */
     Route::get('/{id}', 'SysDictTypeController@getInfo')->where('id','[0-9]+');
+
+    /**
+     * 更新
+     */
+    Route::put('/{id}', 'SysDictTypeController@edit')->where('id','[0-9]+');
 
 });
 

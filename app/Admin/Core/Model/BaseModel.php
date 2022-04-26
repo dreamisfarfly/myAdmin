@@ -13,10 +13,10 @@ use Illuminate\Database\Eloquent\Model;
 class BaseModel extends Model
 {
 
-    protected static function paginateCustom()
-    {
-        return [];
-    }
+    /**
+     * @var bool
+     */
+    public $timestamps = false;
 
     /**
      * Prepare a date for array / JSON serialization.

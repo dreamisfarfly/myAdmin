@@ -42,4 +42,13 @@ interface ISysDictTypeService
      */
     function insertDictType(array $data);
 
+    /**
+     * 修改保存字典类型信息
+     *
+     * @param int $dictId 字典ID
+     * @param array $data 字典类型信息
+     * @return mixed 结果
+     */
+    function updateDictType(int $dictId, array $data);
+
 }

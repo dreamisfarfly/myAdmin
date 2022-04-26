@@ -11,7 +11,7 @@ use Illuminate\Foundation\Http\FormRequest;
  *
  * @author zjj
  */
-abstract class BaseRequest extends FormRequest
+class BaseRequest extends FormRequest
 {
 
     /**
@@ -22,6 +22,16 @@ abstract class BaseRequest extends FormRequest
     {
         $error = $validator->errors()->first();
         throw new ParametersException($error);
+    }
+
+    /**
+     * 获取请求参数
+     * @param array $key
+     * @return array
+     */
+    public function getParamsData(array $key): array
+    {
+        return request()->only($key);
     }
 
 }
