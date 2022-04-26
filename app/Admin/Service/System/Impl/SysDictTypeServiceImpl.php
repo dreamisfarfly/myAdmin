@@ -9,6 +9,7 @@ use App\Admin\Core\Exception\ParametersException;
 use App\Admin\Service\System\ISysDictTypeService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -118,5 +119,15 @@ class SysDictTypeServiceImpl implements ISysDictTypeService
 
         }
         return $count;
+    }
+
+    /**
+     * 根据所有字典类型
+     *
+     * @return Builder[]|Collection 字典类型集合信息
+     */
+    function selectDictTypeAll()
+    {
+        return SysDictType::selectDictTypeAll();
     }
 }

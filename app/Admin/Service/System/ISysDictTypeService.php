@@ -59,4 +59,11 @@ interface ISysDictTypeService
      */
     function deleteDictTypeByIds(array $ids);
 
+    /**
+     * 根据所有字典类型
+     *
+     * @return mixed 字典类型集合信息
+     */
+    function selectDictTypeAll();
+
 }

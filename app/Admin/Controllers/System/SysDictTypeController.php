@@ -102,9 +102,9 @@ class SysDictTypeController extends BaseController
     /**
      * 获取字典选择框列表
      */
-    public function optionSelect()
+    public function optionSelect(): JsonResponse
     {
-
+        return (new AjaxResult())->success($this->sysDictTypeService->selectDictTypeAll());
     }
 
 }

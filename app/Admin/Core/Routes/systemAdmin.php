@@ -49,7 +49,7 @@ Route::prefix('/system/dict/type')->group(function(){
     Route::get('/list','SysDictTypeController@list');
 
     /**
-     * 列表
+     * 添加
      */
     Route::post('','SysDictTypeController@add');
 
@@ -67,6 +67,12 @@ Route::prefix('/system/dict/type')->group(function(){
      * 删除
      */
     Route::delete('/', 'SysDictTypeController@remove');
+
+    /**
+     * 获取字典选择框列表
+     */
+    Route::get('/optionselect', 'SysDictTypeController@optionSelect');
+
 
 });
 

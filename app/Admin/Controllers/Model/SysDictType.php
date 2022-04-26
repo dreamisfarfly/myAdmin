@@ -5,6 +5,7 @@ namespace App\Admin\Controllers\Model;
 use App\Admin\Core\Model\BaseModel;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -84,6 +85,16 @@ class SysDictType extends BaseModel
         return self::query()
             ->whereIn('dict_id', $ids)
             ->delete();
+    }
+
+    /**
+     * 根据所有字典类型
+     *
+     * @return Builder[]|Collection 字典类型集合信息
+     */
+    public static function selectDictTypeAll()
+    {
+        return self::query()->get();
     }
 
     /**
