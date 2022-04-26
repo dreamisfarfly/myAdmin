@@ -91,4 +91,9 @@ Route::prefix('/system/dict/data')->group(function(){
      */
     Route::get('/{dictCode}', 'SysDictDataController@getInfo')->where('dictCode','[0-9]+');
 
+    /**
+     * 根据字典类型查询字典数据信息
+     */
+    Route::get('/type/{dictType}','SysDictDataController@dictType');
+
 });

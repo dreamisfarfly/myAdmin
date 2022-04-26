@@ -6,6 +6,7 @@ use App\Admin\Model\SysDictData;
 use App\Admin\Service\System\ISysDictDataService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -36,4 +37,21 @@ class SysDictDataServiceImpl implements ISysDictDataService
     {
         return SysDictData::selectDictDataById($dictCode);
     }
+
+    /**
+     * 根据字典类型查询字典数据
+     *
+     * @param string $dictType 字典类型
+     * @return Builder[]|Collection|null 字典数据集合信息
+     */
+    function selectDictDataByType(string $dictType)
+    {
+        $dictData = SysDictData::selectDictDataByType($dictType);
+        if($dictData->isNotEmpty())
+        {
+            return $dictData;
+        }
+        return null;
+    }
+
 }

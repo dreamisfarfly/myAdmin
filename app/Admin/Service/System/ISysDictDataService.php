@@ -25,4 +25,12 @@ interface ISysDictDataService
      */
     function selectDictDataById(int $dictCode);
 
+    /**
+     * 根据字典类型查询字典数据
+     *
+     * @param string $dictType 字典类型
+     * @return mixed 字典数据集合信息
+     */
+    function selectDictDataByType(string $dictType);
+
 }

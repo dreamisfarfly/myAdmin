@@ -2,6 +2,7 @@
 
 namespace App\Admin\Service\System\Impl;
 
+use App\Admin\Core\Utils\DictUtils;
 use App\Admin\Model\SysDictData;
 use App\Admin\Model\SysDictType;
 use App\Admin\Core\Constant\UserConstants;
@@ -67,7 +68,12 @@ class SysDictTypeServiceImpl implements ISysDictTypeService
      */
     function insertDictType(array $data): bool
     {
-        return SysDictType::insertDictType($data);
+        $row = SysDictType::insertDictType($data);
+        if($row > 0)
+        {
+            DictUtils::clearDictCache();
+        }
+        return $row;
     }
 
     /**
@@ -87,7 +93,7 @@ class SysDictTypeServiceImpl implements ISysDictTypeService
             $row = SysDictType::updateDictType($dictId, $data);
             if( $row > 0)
             {
-
+                DictUtils::clearDictCache();
             }
             DB::commit();
         }catch (\Exception $exception){
@@ -116,7 +122,7 @@ class SysDictTypeServiceImpl implements ISysDictTypeService
         }
         $count = SysDictType::deleteDictTypeByIds($ids);
         if($count > 0){
-
+            DictUtils::clearDictCache();
         }
         return $count;
     }
@@ -129,5 +135,37 @@ class SysDictTypeServiceImpl implements ISysDictTypeService
     function selectDictTypeAll()
     {
         return SysDictType::selectDictTypeAll();
+    }
+
+    /**
+     * 清空缓存数据
+     *
+     * @return void
+     */
+    function clearCache()
+    {
+        DictUtils::clearDictCache();
+    }
+
+    /**
+     * 根据字典类型查询字典数据
+     *
+     * @param string $dictType 字典类型
+     * @return Builder[]|Collection|null 字典数据集合信息
+     */
+    function selectDictDataByType(string $dictType)
+    {
+        $dictData = DictUtils::getDictCache($dictType);
+        if($dictData != null)
+        {
+            return $dictData;
+        }
+        $dictData = SysDictData::selectDictDataByType($dictType);
+        if($dictData != null)
+        {
+            DictUtils::setDictCache($dictType, $dictData);
+            return $dictData;
+        }
+        return null;
     }
 }

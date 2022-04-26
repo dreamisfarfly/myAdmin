@@ -5,6 +5,7 @@ namespace App\Admin\Model;
 use App\Admin\Core\Model\BaseModel;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -58,11 +59,27 @@ class SysDictData extends BaseModel
      * @param string $dictType 字典类型
      * @return int 字典数据
      */
-    public static function countDictDataByType(string $dictType)
+    public static function countDictDataByType(string $dictType): int
     {
         return self::query()
             ->where('dict_type', $dictType)
             ->count();
+    }
+
+
+    /**
+     * 根据字典类型查询字典数据
+     *
+     * @param string $dictType 字典类型
+     * @return Builder[]|Collection 字典数据集合信息
+     */
+    public static function selectDictDataByType(string $dictType)
+    {
+        return self::query()
+            ->where('status', 0)
+            ->where('dict_type', $dictType)
+            ->orderBy('dict_sort')
+            ->get();
     }
 
 }

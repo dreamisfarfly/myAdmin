@@ -6,7 +6,6 @@ use App\Admin\Core\Controller\BaseController;
 use App\Admin\Core\Domain\AjaxResult;
 use App\Admin\Core\Security\Authentication;
 use App\Admin\Service\System\Impl\SysDictDataServiceImpl;
-use App\Admin\Service\System\Impl\SysDictTypeServiceImpl;
 use App\Admin\Service\System\ISysDictDataService;
 use Illuminate\Http\JsonResponse;
 
@@ -52,9 +51,10 @@ class SysDictDataController extends BaseController
     /**
      * 根据字典类型查询字典数据信息
      */
-    public function dictType()
+    public function dictType(string $dictType): JsonResponse
     {
-
+        $data = $this->sysDictDataService->selectDictDataByType($dictType);
+        return (new AjaxResult())->success($data);
     }
 
     /**
