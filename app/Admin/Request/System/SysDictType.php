@@ -5,7 +5,7 @@ namespace App\Admin\Request\System;
 use App\Admin\Core\Request\BaseRequest;
 
 /**
- * 字典类型表
+ * 字典类型
  *
  * @author zjj
  */

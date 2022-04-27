@@ -22,9 +22,22 @@ class SysRole extends BaseModel
      *
      * @return LengthAwarePaginator
      */
-    public static function selectRoleList(): LengthAwarePaginator
+    static function selectRoleList(): LengthAwarePaginator
     {
         return self::customPagination(self::query());
+    }
+
+    /**
+     * 批量删除角色信息
+     *
+     * @param array $roleIds 需要删除的角色ID
+     * @return bool 结果
+     */
+    static function deleteRoleByIds(array $roleIds): bool
+    {
+        return self::query()
+            ->where('role_id', $roleIds)
+            ->exists();
     }
 
 }

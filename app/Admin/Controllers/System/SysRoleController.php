@@ -3,7 +3,10 @@
 namespace App\Admin\Controllers\System;
 
 use App\Admin\Core\Controller\BaseController;
+use App\Admin\Core\Domain\AjaxResult;
+use App\Admin\Core\Exception\ParametersException;
 use App\Admin\Core\Security\Authentication;
+use App\Admin\Request\System\Ids;
 use App\Admin\Service\System\Impl\SysRoleServiceImpl;
 use App\Admin\Service\System\ISysRoleService;
 use Illuminate\Http\JsonResponse;
@@ -49,9 +52,10 @@ class SysRoleController extends BaseController
     /**
      * 新增角色
      */
-    public function add()
+    public function add(int $roleId): JsonResponse
     {
         Authentication::hasPermit('system:role:add');
+        return (new AjaxResult())->success();
     }
 
     /**
@@ -80,10 +84,12 @@ class SysRoleController extends BaseController
 
     /**
      * 删除角色
+     * @throws ParametersException
      */
-    public function remove()
+    public function remove(Ids $ids): JsonResponse
     {
         Authentication::hasPermit('system:role:remove');
+        return $this->toAjax($this->sysRoleService->deleteRoleByIds($ids->getParamsData(['ids'])));
     }
 
     /**
