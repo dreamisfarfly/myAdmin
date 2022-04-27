@@ -16,11 +16,13 @@ class SysUser extends BaseModel
     protected $table = 'sys_user';
 
     /**
+     * 根据条件分页查询用户数据
+     *
      * @return LengthAwarePaginator
      */
     public static function selectUserList(): LengthAwarePaginator
     {
-        return self::query()->paginate();
+        return self::customPagination(self::query());
     }
 
 }

@@ -25,7 +25,7 @@ class SysDictType extends BaseModel
      */
     public static function selectDictTypeList(): LengthAwarePaginator
     {
-        return self::query()->paginate();
+        return self::customPagination(self::query());
     }
 
     /**

@@ -4,6 +4,8 @@ namespace App\Admin\Model;
 
 use App\Admin\Core\Model\BaseModel;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * 角色表
@@ -22,7 +24,7 @@ class SysRole extends BaseModel
      */
     public static function selectRoleList(): LengthAwarePaginator
     {
-        return self::query()->paginate();
+        return self::customPagination(self::query());
     }
 
 }

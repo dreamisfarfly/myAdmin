@@ -23,7 +23,7 @@ class SysDictData extends BaseModel
      */
     public static function selectDictDataList(): LengthAwarePaginator
     {
-        return self::query()->paginate();
+        return self::customPagination(self::query());
     }
 
     /**
