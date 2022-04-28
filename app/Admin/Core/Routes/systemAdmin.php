@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Route;
 //登录接口
 Route::post('login','SysLoginController@login');
 
+//验证码接口
+Route::namespace('Common')->group(function(){
+    Route::get('captchaImage','CaptchaController@getCode');
+});
+
 //获取用户信息
 Route::get('getInfo','SysLoginController@getInfo');
 

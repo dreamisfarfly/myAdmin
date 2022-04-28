@@ -34,10 +34,10 @@ class AjaxResult
 
     /**
      * 操作成功
-     * @param object|null $data
+     * @param  $data
      * @return JsonResponse
      */
-    public function success(?object $data = null): JsonResponse
+    public function success($data = null): JsonResponse
     {
         return $this->standardOutput(CustomStatus::SUCCESS, '操作成功', $data);
     }
