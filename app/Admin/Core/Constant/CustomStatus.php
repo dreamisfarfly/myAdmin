@@ -11,7 +11,7 @@ interface CustomStatus
 {
 
     //成功
-    const SUCCESS = 10000;
+    const SUCCESS = 200;
 
     //操作失败
     const OPERATION_FAILURE = 10001;

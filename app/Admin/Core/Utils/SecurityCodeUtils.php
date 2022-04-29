@@ -31,19 +31,6 @@ class SecurityCodeUtils
     private $image;
 
     /**
-     * 设置验证码大小
-     * @param int $width
-     * @param int $height
-     * @return $this
-     */
-    public function setSize(int $width, int $height): SecurityCodeUtils
-    {
-        $this->width = $width;
-        $this->height = $height;
-        return $this;
-    }
-
-    /**
      * 初始化
      * @return int
      */
@@ -62,53 +49,53 @@ class SecurityCodeUtils
 
         $data = $this->operation();
 
-        $tcolor = imagecolorallocate($this->image, 50, 100, 150);
+        $tcolor = imagecolorallocate($this->image, 8, 3, 243);
         imagettftext(
             $this->image,
-            28,
-            rand(0,30),
-            40,
-            ($this->height/2)+14,
+            60,
+            rand(0,20),
+            30,
+            ($this->height/2)+20,
             $tcolor,
             public_path().'/font/Gabriola.ttf',
             $data['oneNumber']
         );
         imagettftext(
             $this->image,
-            28,
-            rand(0,30),
-            40+26,
-            ($this->height/2)+14,
+            60,
+            rand(0,20),
+            30+30,
+            ($this->height/2)+20,
             $tcolor,
             public_path().'/font/Gabriola.ttf',
             $data['symbol']
         );
         imagettftext(
             $this->image,
-            28,
-            rand(0,30),
-            40+52,
-            ($this->height/2)+14,
+            60,
+            rand(0,20),
+            30+60,
+            ($this->height/2)+20,
             $tcolor,
             public_path().'/font/Gabriola.ttf',
             $data['towNumber']
         );
         imagettftext(
             $this->image,
-            28,
-            rand(0,30),
-            40+78,
-            ($this->height/2)+14,
+            60,
+            rand(0,20),
+            30+90,
+            ($this->height/2)+20,
             $tcolor,
             public_path().'/font/Gabriola.ttf',
             '='
         );
         imagettftext(
             $this->image,
-            28,
-            rand(0,30),
-            40+110,
-            ($this->height/2)+14,
+            60,
+            rand(0,20),
+            30+126,
+            ($this->height/2)+20,
             $tcolor,
             public_path().'/font/Gabriola.ttf',
             '?'

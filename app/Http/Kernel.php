@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Admin\Core\Middleware\AuthenticationToken;
+use App\Admin\Core\Middleware\EnableCrossRequestMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -22,6 +23,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        EnableCrossRequestMiddleware::class
     ];
 
     /**
@@ -47,7 +49,8 @@ class Kernel extends HttpKernel
         ],
 
         'admin' => [
-            AuthenticationToken::class
+            AuthenticationToken::class,
+            EnableCrossRequestMiddleware::class
         ],
 
     ];

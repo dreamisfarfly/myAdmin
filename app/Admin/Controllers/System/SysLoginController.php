@@ -4,6 +4,7 @@ namespace App\Admin\Controllers\System;
 
 use App\Admin\Core\Controller\BaseController;
 use App\Admin\Core\Domain\AjaxResult;
+use App\Admin\Core\Exception\ParametersException;
 use App\Admin\Request\System\LoginBody;
 use App\Admin\Service\System\Impl\SysLoginServiceImpl;
 use App\Admin\Service\System\ISysLoginService;
@@ -35,6 +36,7 @@ class SysLoginController extends BaseController
      *
      * @param LoginBody $loginBody
      * @return JsonResponse
+     * @throws ParametersException
      */
     public function login(LoginBody $loginBody): JsonResponse
     {
@@ -52,7 +54,7 @@ class SysLoginController extends BaseController
      */
     public function getInfo()
     {
-
+        return (new AjaxResult())->success();
     }
 
     /**
