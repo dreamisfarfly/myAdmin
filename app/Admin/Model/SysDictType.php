@@ -19,13 +19,31 @@ class SysDictType extends BaseModel
     protected $table = 'sys_dict_type';
 
     /**
+     * 查询参数
+     */
+    protected const SELECT_PARAMS = [
+        'dict_id as dictId',
+        'dict_name as dictName',
+        'dict_type as dictType',
+        'status',
+        'create_by as createBy',
+        'create_time as createTime',
+        'update_by as updateBy',
+        'update_time as updateTime',
+        'remark'
+    ];
+
+    /**
      * 根据条件分页查询字典类型
      *
      * @return LengthAwarePaginator
      */
     public static function selectDictTypeList(): LengthAwarePaginator
     {
-        return self::customPagination(self::query());
+        return self::customPagination(
+            self::query()
+              ->select(self::SELECT_PARAMS)
+        );
     }
 
     /**
@@ -94,7 +112,7 @@ class SysDictType extends BaseModel
      */
     public static function selectDictTypeAll()
     {
-        return self::query()->get();
+        return self::query()->select(self::SELECT_PARAMS)->get();
     }
 
     /**

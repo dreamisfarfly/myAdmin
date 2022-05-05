@@ -12,6 +12,15 @@ return [
      */
     'notLoginAPiSite' => [
         '/login'
+    ],
+
+    /**
+     * JWt 配置
+     */
+    'jwt' => [
+        'header' => 'Authorization', //令牌自定义标识
+        'secret' => 'abcdefghijklmnopqrstuvwxyz', //令牌秘钥
+        'expireTime' => 30 //令牌有效期（默认30分钟）
     ]
 
 ];

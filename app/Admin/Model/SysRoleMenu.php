@@ -3,6 +3,8 @@
 namespace App\Admin\Model;
 
 use App\Admin\Core\Model\BaseModel;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * 角色与菜单关联表 数据层
@@ -11,6 +13,8 @@ use App\Admin\Core\Model\BaseModel;
  */
 class SysRoleMenu extends BaseModel
 {
+
+    protected $table = 'sys_role_menu';
 
     /**
      * 批量删除角色菜单关联信息

@@ -16,6 +16,27 @@ use Illuminate\Database\Eloquent\Model;
 class SysDictData extends BaseModel
 {
 
+    protected $table = 'sys_dict_data';
+
+    /**
+     * 查询参数
+     */
+    protected const SELECT_PARAMS = [
+        'dict_code as dictCode',
+        'dict_sort as dictSort',
+        'dict_label as dictLabel',
+        'dict_value as dictValue',
+        'dict_type as dictType',
+        'css_class as cssClass',
+        'list_class as listClass',
+        'is_default as isDefault',
+        'status',
+        'create_by as createBy',
+        'create_time as createTime',
+        'update_by as updateBy',
+        'update_time as updateTime'
+    ];
+
     /**
      * 根据条件分页查询字典数据
      *
@@ -23,7 +44,10 @@ class SysDictData extends BaseModel
      */
     public static function selectDictDataList(): LengthAwarePaginator
     {
-        return self::customPagination(self::query());
+        return self::customPagination(
+            self::query()
+                ->select(self::SELECT_PARAMS)
+        );
     }
 
     /**
@@ -78,6 +102,7 @@ class SysDictData extends BaseModel
         return self::query()
             ->where('status', 0)
             ->where('dict_type', $dictType)
+            ->select(self::SELECT_PARAMS)
             ->orderBy('dict_sort')
             ->get();
     }

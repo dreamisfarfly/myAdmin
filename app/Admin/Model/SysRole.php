@@ -24,7 +24,25 @@ class SysRole extends BaseModel
      */
     static function selectRoleList(): LengthAwarePaginator
     {
-        return self::customPagination(self::query());
+        return self::customPagination(
+            self::query()
+              ->select([
+                  'role_id as roleId',
+                  'role_name as roleName',
+                  'role_key as roleKey',
+                  'role_sort as roleSort',
+                  'data_scope as dataScope',
+                  'menu_check_strictly as menuCheckStrictly',
+                  'dept_check_strictly as deptCheckStrictly',
+                  'status',
+                  'del_flag as delFlag',
+                  'create_by as createBy',
+                  'create_time as createTime',
+                  'update_by as updateBy',
+                  'update_time as updateTime',
+                  'remark'
+              ])
+        );
     }
 
     /**

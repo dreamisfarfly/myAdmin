@@ -3,6 +3,8 @@
 namespace App\Admin\Service\System\Impl;
 
 use App\Admin\Core\Exception\ParametersException;
+use App\Admin\Core\Security\TokenService;
+use App\Admin\Model\SysUser;
 use App\Admin\Service\System\ISysLoginService;
 use Illuminate\Support\Facades\Redis;
 
@@ -31,6 +33,11 @@ class SysLoginServiceImpl implements ISysLoginService
             throw new ParametersException('验证码过期或者不存在');
         }
         Redis::set($uuid,null); //删除验证码
-        return 'test';
+        $userInfo = SysUser::selectUserByUsername($username);
+        if(null == $userInfo || $userInfo->password != md5($password))
+        {
+            throw new ParametersException('用户不存在或者密码错误');
+        }
+        return (new TokenService())->createToken(['sysUser' => $userInfo->toArray()]);
     }
 }

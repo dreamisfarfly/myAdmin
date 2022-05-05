@@ -5,9 +5,14 @@ namespace App\Admin\Controllers\System;
 use App\Admin\Core\Controller\BaseController;
 use App\Admin\Core\Domain\AjaxResult;
 use App\Admin\Core\Exception\ParametersException;
+use App\Admin\Core\Security\TokenService;
 use App\Admin\Request\System\LoginBody;
 use App\Admin\Service\System\Impl\SysLoginServiceImpl;
+use App\Admin\Service\System\Impl\SysMenuServiceImpl;
+use App\Admin\Service\System\Impl\SysPermissionServiceImpl;
 use App\Admin\Service\System\ISysLoginService;
+use App\Admin\Service\System\ISysMenuService;
+use App\Admin\Service\System\ISysPermissionService;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -24,11 +29,33 @@ class SysLoginController extends BaseController
     private ISysLoginService $sysLoginService;
 
     /**
-     * @param SysLoginServiceImpl $sysLoginService
+     * @var TokenService
      */
-    public function __construct(SysLoginServiceImpl $sysLoginService)
+    private TokenService $tokenService;
+
+    /**
+     * @var ISysMenuService
+     */
+    private ISysMenuService $sysMenuService;
+
+    /**
+     * @var ISysPermissionService|SysPermissionServiceImpl
+     */
+    private ISysPermissionService $sysPermissionService;
+
+    /**
+     * @param SysLoginServiceImpl $sysLoginService
+     * @param TokenService $tokenService
+     * @param SysMenuServiceImpl $sysMenuService
+     * @param SysPermissionServiceImpl $sysPermissionService
+     */
+    public function __construct(SysLoginServiceImpl $sysLoginService, TokenService $tokenService,
+                                SysMenuServiceImpl $sysMenuService, SysPermissionServiceImpl $sysPermissionService)
     {
         $this->sysLoginService = $sysLoginService;
+        $this->tokenService = $tokenService;
+        $this->sysMenuService = $sysMenuService;
+        $this->sysPermissionService = $sysPermissionService;
     }
 
     /**
@@ -52,17 +79,33 @@ class SysLoginController extends BaseController
     /**
      * 获取用户信息
      */
-    public function getInfo()
+    public function getInfo(): JsonResponse
     {
-        return (new AjaxResult())->success();
+        $loginUser = $this->tokenService->getLoginUser();
+        // 角色用户信息集合
+        $userInfo =  $loginUser['sysUser'];
+        // 角色集合
+        $roles = $this->sysPermissionService->getRolePermission($userInfo);
+        // 权限集合
+        $permissions = $this->sysPermissionService->getMenuPermission($userInfo);
+        return (new AjaxResult())
+            ->put([
+                'user' => $userInfo,
+                'roles' => $roles,
+                'permissions' => $permissions
+            ])
+            ->success();
     }
 
     /**
      * 获取路由信息
      */
-    public function getRouters()
+    public function getRouters(): JsonResponse
     {
-
+        $loginUser = $this->tokenService->getLoginUser();
+        $userInfo = $loginUser['sysUser'];
+        $menus = $this->sysMenuService->selectMenuTreeByUserId($userInfo['userId']);
+        return (new AjaxResult())->success($menus);
     }
 
 }
