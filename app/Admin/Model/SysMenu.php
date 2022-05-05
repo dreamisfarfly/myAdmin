@@ -121,4 +121,46 @@ class SysMenu extends BaseModel
             ->get();
     }
 
+    /**
+     * 根据用户查询系统菜单列表
+     * @param array $queryParams
+     * @return array|Builder[]|Collection
+     */
+    public static function selectMenuList(array $queryParams)
+    {
+        return self::query()
+            ->from('sys_menu as m')
+            ->leftJoin('sys_role_menu as rm',function ($join){
+                $join->on('m.menu_id', '=', 'rm.menu_id');
+            })
+            ->leftJoin('sys_user_role as ur',function($join){
+                $join->on('rm.role_id', '=', 'ur.role_id');
+            })
+            ->leftJoin('sys_role as ro',function($join){
+                $join->on('ur.role_id', '=', 'ro.role_id');
+            })
+            ->when(isset($queryParams['userId']),function($query) use($queryParams){
+                $query->where('ur.user_id', $queryParams['userId']);
+            })
+            ->select([
+                'm.menu_id as menuId',
+                'm.parent_id as parentId',
+                'm.menu_name as menuName',
+                'm.path',
+                'm.component',
+                'm.visible',
+                'm.status',
+                'm.perms',
+                'm.is_frame as isFrame',
+                'm.is_cache as isCache',
+                'm.menu_type as menuType',
+                'm.icon',
+                'm.order_num as orderNum',
+                'm.create_time as createTime'])
+            ->distinct('m.menu_id')
+            ->orderBy('m.parent_id')
+            ->orderBy('m.order_num')
+            ->get();
+    }
+
 }

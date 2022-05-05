@@ -4,6 +4,7 @@ namespace App\Admin\Service\System\Impl;
 
 use App\Admin\Core\Security\SecurityUtils;
 use App\Admin\Model\SysMenu;
+use App\Admin\Model\SysRole;
 use App\Admin\Service\System\ISysPermissionService;
 
 /**
@@ -29,7 +30,11 @@ class SysPermissionServiceImpl implements ISysPermissionService
         }
         else
         {
-
+            $sysRoleList = SysRole::selectRolePermissionByUserId($sysUser['userId'])->toArray();
+            foreach ($sysRoleList as $item)
+            {
+                array_push($roles, $item['roleKey']);
+            }
         }
         return $roles;
     }
@@ -43,7 +48,7 @@ class SysPermissionServiceImpl implements ISysPermissionService
     function getMenuPermission(array $sysUser): array
     {
         $perms = [];
-        if(!SecurityUtils::isAdmin($sysUser['userId']))
+        if(SecurityUtils::isAdmin($sysUser['userId']))
         {
             array_push($perms, '*:*:*');
         }
@@ -52,7 +57,9 @@ class SysPermissionServiceImpl implements ISysPermissionService
             $permsArray = SysMenu::selectMenuPermsByUserId($sysUser['userId']);
             foreach ($permsArray as $item)
             {
-                array_push($perms, $item->perms);
+                if($item->perms != ''){
+                    array_push($perms, $item->perms);
+                }
             }
         }
         return $perms;

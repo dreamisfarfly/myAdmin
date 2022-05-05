@@ -2,8 +2,11 @@
 
 namespace App\Admin\Service\System\Impl;
 
+use App\Admin\Core\Utils\TreeSelectUtil;
 use App\Admin\Model\SysDept;
 use App\Admin\Service\System\ISysDeptService;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * 部门管理 服务实现
@@ -55,5 +58,27 @@ class SysDeptServiceImpl implements ISysDeptService
     function checkDeptNameUnique(array $dept)
     {
         // TODO: Implement checkDeptNameUnique() method.
+    }
+
+    /**
+     * 查询部门管理数据
+     *
+     * @param array $queryParams 部门信息
+     * @return Builder[]|Collection
+     */
+    function selectDeptList(array $queryParams = [])
+    {
+        return SysDept::selectDeptList($queryParams);
+    }
+
+    /**
+     * 构建前端所需要下拉树结构
+     *
+     * @param array $deps 部门列表
+     * @return array 下拉树结构列表
+     */
+    function buildDeptTreeSelect(array $deps): array
+    {
+        return TreeSelectUtil::collect($deps, 0,'deptId','deptName');
     }
 }

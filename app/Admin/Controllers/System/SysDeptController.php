@@ -6,6 +6,7 @@ use App\Admin\Core\Controller\BaseController;
 use App\Admin\Core\Domain\AjaxResult;
 use App\Admin\Core\Security\Authentication;
 use App\Admin\Request\System\SysDept;
+use App\Admin\Request\System\SysDeptRequest;
 use App\Admin\Service\System\Impl\SysDeptServiceImpl;
 use App\Admin\Service\System\ISysDeptService;
 use Illuminate\Http\JsonResponse;
@@ -34,17 +35,25 @@ class SysDeptController extends BaseController
     /**
      * 获取部门列表
      */
-    public function list()
+    public function list(SysDeptRequest $sysDeptRequest): JsonResponse
     {
         Authentication::hasPermit('system:dept:list');
+        return (new AjaxResult())
+            ->success(
+                $this->sysDeptService->selectDeptList($sysDeptRequest->getParamsData([]))
+            );
     }
 
     /**
      * 查询部门列表（排除节点）
      */
-    public function excludeChild()
+    public function excludeChild(int $deptId = 0)
     {
         Authentication::hasPermit('system:dept:list');
+        $deps = $this->sysDeptService->selectDeptList([]);
+//        foreach ($deps as $item){
+//            if($item['deptId'] == $deptId || )
+//        }
     }
 
     /**
@@ -58,9 +67,13 @@ class SysDeptController extends BaseController
     /**
      * 获取部门下拉树列表
      */
-    public function treeSelect()
+    public function treeSelect(): JsonResponse
     {
-
+        $deps = $this->sysDeptService->selectDeptList();
+        return (new AjaxResult())
+            ->success(
+                $this->sysDeptService->buildDeptTreeSelect($deps->toArray())
+            );
     }
 
     /**

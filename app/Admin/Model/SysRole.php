@@ -4,6 +4,8 @@ namespace App\Admin\Model;
 
 use App\Admin\Core\Model\BaseModel;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -51,11 +53,48 @@ class SysRole extends BaseModel
      * @param array $roleIds 需要删除的角色ID
      * @return bool 结果
      */
-    static function deleteRoleByIds(array $roleIds): bool
+    public static function deleteRoleByIds(array $roleIds): bool
     {
         return self::query()
             ->where('role_id', $roleIds)
             ->exists();
+    }
+
+    /**
+     * 根据用户ID查询角色
+     *
+     * @param int $userId
+     * @return Builder[]|Collection
+     */
+    public static function selectRolePermissionByUserId(int $userId)
+    {
+        return self::query()
+            ->from('sys_role as r')
+            ->leftJoin('sys_user_role as ur',function($query){
+                $query->on('ur.role_id', '=', 'r.role_id');
+            })
+            ->leftJoin('sys_user as u',function ($query){
+                $query->on('u.user_id', '=', 'ur.user_id');
+            })
+            ->leftJoin('sys_dept as d',function($query){
+                $query->on('d.dept_id', '=', 'u.dept_id');
+            })
+            ->where('r.del_flag', 0)
+            ->where('ur.user_id', $userId)
+            ->select([
+                'r.role_id as roleId',
+                'r.role_name as roleName',
+                'r.role_key as roleKey',
+                'r.role_sort as roleSort',
+                'r.data_scope as dataScope',
+                'r.menu_check_strictly as menuCheckStrictly',
+                'r.dept_check_strictly as deptCheckStrictly',
+                'r.status',
+                'r.del_flag as delFlag',
+                'r.create_time as createTime',
+                'r.remark'
+            ])
+            ->get();
     }
 
 }

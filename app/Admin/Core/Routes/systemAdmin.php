@@ -19,6 +19,9 @@ Route::get('getInfo','SysLoginController@getInfo');
 //登录接口
 Route::get('getRouters','SysLoginController@getRouters');
 
+//退出登录
+Route::post('logout','SysLoginController@logout');
+
 /**
  * 系统用户
  */
@@ -100,5 +103,73 @@ Route::prefix('/system/dict/data')->group(function(){
      * 根据字典类型查询字典数据信息
      */
     Route::get('/type/{dictType}','SysDictDataController@dictType');
+
+});
+
+/**
+ * 菜单信息
+ */
+Route::prefix('/system/menu')->group(function(){
+
+    /**
+     * 列表
+     */
+    Route::get('/list', 'SysMenuController@list');
+
+    /**
+     * 树形选择框
+     */
+    Route::get('/treeselect', 'SysMenuController@treeSelect');
+
+});
+
+/**
+ * 部门管理
+ */
+Route::prefix('/system/dept')->group(function(){
+
+    /**
+     * 列表
+     */
+    Route::get('/list', 'SysDeptController@list');
+
+    /**
+     * 获取部门下拉树列表
+     */
+    Route::get('/treeselect', 'SysDeptController@treeSelect');
+
+});
+
+/**
+ * 岗位
+ */
+Route::prefix('/system/post')->group(function(){
+
+    /**
+     * 列表
+     */
+    Route::get('/list', 'SysPostController@list');
+
+});
+
+
+Route::namespace('Monitor')->prefix('monitor')->group(function(){
+
+    /**
+     * 在线用户
+     */
+    Route::prefix('online')->group(function(){
+
+        /**
+         * 列表
+         */
+        Route::get('list', 'SysUserOnlineController@list');
+
+        /**
+         * 列表
+         */
+        Route::delete('/{tokenId}', 'SysUserOnlineController@forceLogout');
+
+    });
 
 });

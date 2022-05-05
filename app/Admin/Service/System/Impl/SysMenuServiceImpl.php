@@ -4,8 +4,11 @@ namespace App\Admin\Service\System\Impl;
 
 use App\Admin\Core\Security\SecurityUtils;
 use App\Admin\Core\Utils\MenuUtil;
+use App\Admin\Core\Utils\TreeSelectUtil;
 use App\Admin\Model\SysMenu;
 use App\Admin\Service\System\ISysMenuService;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * 菜单 业务层
@@ -42,5 +45,32 @@ class SysMenuServiceImpl implements ISysMenuService
     function selectMenuPermsByUserId(int $userId)
     {
         $perms = SysMenu::selectMenuPermsByUserId($userId);
+    }
+
+    /**
+     * 根据条件菜单列表
+     *
+     * @param array $queryParams
+     * @param int $userId
+     * @return array|Builder[]|Collection
+     */
+    function selectMenuList(array $queryParams, int $userId)
+    {
+        if(!SecurityUtils::isAdmin($userId))
+        {
+            $queryParams['userId'] = $userId;
+        }
+        return SysMenu::selectMenuList($queryParams);
+    }
+
+    /**
+     * 构建前端所需要下拉树结构
+     *
+     * @param array $menus 菜单列表
+     * @return array 下拉树结构列表
+     */
+    function buildMenuTreeSelect(array $menus): array
+    {
+        return TreeSelectUtil::collect($menus,0,'menuId', 'menuName');
     }
 }

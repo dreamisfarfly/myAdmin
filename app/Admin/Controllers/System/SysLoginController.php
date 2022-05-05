@@ -108,4 +108,13 @@ class SysLoginController extends BaseController
         return (new AjaxResult())->success($menus);
     }
 
+    /**
+     * 退出登录
+     * @return JsonResponse
+     */
+    public function logout(): JsonResponse
+    {
+        return (new AjaxResult())->success();
+    }
+
 }

@@ -3,6 +3,7 @@
 namespace App\Admin\Core\Model;
 
 use App\Admin\Core\Exception\ParametersException;
+use App\Admin\Core\Utils\PagingParametersUtil;
 use DateTimeInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
@@ -31,16 +32,8 @@ class BaseModel extends Model
      */
     public static function customPagination(Builder $builder): ?LengthAwarePaginator
     {
-        $pageNum = 1;
-        $pageSize = 10;
-        try {
-            if(request()->exists('pageNum') && preg_match("/^[1-9][0-9]*$/" ,request()->get('pageNum')))
-                $pageNum = request()->get('pageNum');
-            if(request()->exists('pageSize') && preg_match("/^[1-9][0-9]*$/" ,request()->get('pageSize')))
-                $pageSize = request()->get('pageSize');
-        } catch (NotFoundExceptionInterface | ContainerExceptionInterface $e) {
-            return null;
-        }
+        $pageNum = PagingParametersUtil::getPagingParam('pageNum');
+        $pageSize = PagingParametersUtil::getPagingParam('pageSize',10);
         return $builder->paginate($pageSize,['*'],'pageNum',$pageNum);
     }
 

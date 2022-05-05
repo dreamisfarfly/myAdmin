@@ -42,4 +42,20 @@ interface ISysDeptService
      */
     function checkDeptNameUnique(array $dept);
 
+    /**
+     * 查询部门管理数据
+     *
+     * @param array $queryParams 部门信息
+     * @return mixed 部门信息集合
+     */
+    function selectDeptList(array $queryParams = []);
+
+    /**
+     * 构建前端所需要下拉树结构
+     *
+     * @param array $deps 部门列表
+     * @return mixed 下拉树结构列表
+     */
+    function buildDeptTreeSelect(array $deps);
+
 }
