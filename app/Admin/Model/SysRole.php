@@ -6,6 +6,7 @@ use App\Admin\Core\Model\BaseModel;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -20,6 +21,23 @@ class SysRole extends BaseModel
     protected $table = 'sys_role';
 
     /**
+     * 查询参数
+     */
+    protected const SELECT_PARAMS = [
+        'r.role_id as roleId',
+        'r.role_name as roleName',
+        'r.role_key as roleKey',
+        'r.role_sort as roleSort',
+        'r.data_scope as dataScope',
+        'r.menu_check_strictly as menuCheckStrictly',
+        'r.dept_check_strictly as deptCheckStrictly',
+        'r.status',
+        'r.del_flag as delFlag',
+        'r.create_time as createTime',
+        'r.remark'
+    ];
+
+    /**
      * 根据条件分页查询角色数据
      *
      * @param array $queryParam 查询参数
@@ -29,36 +47,22 @@ class SysRole extends BaseModel
     {
         return self::customPagination(
             self::query()
+                ->from('sys_role as r')
                 ->when(isset($queryParam['roleName']),function($query)use($queryParam){
-                  $query->where('role_name', 'like', $queryParam['roleName'].'%');
+                  $query->where('r.role_name', 'like', $queryParam['roleName'].'%');
                 })->when(isset($queryParam['roleKey']),function($query)use($queryParam){
-                  $query->where('role_key', 'like', $queryParam['roleKey'].'%');
+                  $query->where('r.role_key', 'like', $queryParam['roleKey'].'%');
                 })
                 ->when(isset($queryParam['status']),function($query)use($queryParam){
-                  $query->where('status', $queryParam['status']);
+                  $query->where('r.status', $queryParam['status']);
                 })
                 ->when(isset($queryParam['beginTime']),function($query)use($queryParam){
-                    $query->where('create_time', '>=', $queryParam['beginTime']);
+                    $query->where('r.create_time', '>=', $queryParam['beginTime']);
                 })
                 ->when(isset($queryParam['endTime']),function($query)use($queryParam){
-                    $query->where('create_time', '<=', $queryParam['endTime']);
+                    $query->where('r.create_time', '<=', $queryParam['endTime']);
                 })
-                ->select([
-                  'role_id as roleId',
-                  'role_name as roleName',
-                  'role_key as roleKey',
-                  'role_sort as roleSort',
-                  'data_scope as dataScope',
-                  'menu_check_strictly as menuCheckStrictly',
-                  'dept_check_strictly as deptCheckStrictly',
-                  'status',
-                  'del_flag as delFlag',
-                  'create_by as createBy',
-                  'create_time as createTime',
-                  'update_by as updateBy',
-                  'update_time as updateTime',
-                  'remark'
-              ])
+                ->select(self::SELECT_PARAMS)
         );
     }
 
@@ -83,6 +87,29 @@ class SysRole extends BaseModel
      */
     public static function selectRolePermissionByUserId(int $userId)
     {
+        return self::selectRoleVo()
+            ->where('r.del_flag', 0)
+            ->where('ur.user_id', $userId)
+            ->get();
+    }
+
+    /**
+     * 通过角色ID查询角色
+     *
+     * @param int $roleId 角色ID
+     * @return Builder|Model|object|null 角色对象信息
+     */
+    public static function selectRoleById(int $roleId)
+    {
+        return self::selectRoleVo()->where('r.role_id', $roleId)->first();
+    }
+
+    /**
+     * 查询
+     * @return Builder
+     */
+    private static function selectRoleVo(): Builder
+    {
         return self::query()
             ->from('sys_role as r')
             ->leftJoin('sys_user_role as ur',function($query){
@@ -94,22 +121,7 @@ class SysRole extends BaseModel
             ->leftJoin('sys_dept as d',function($query){
                 $query->on('d.dept_id', '=', 'u.dept_id');
             })
-            ->where('r.del_flag', 0)
-            ->where('ur.user_id', $userId)
-            ->select([
-                'r.role_id as roleId',
-                'r.role_name as roleName',
-                'r.role_key as roleKey',
-                'r.role_sort as roleSort',
-                'r.data_scope as dataScope',
-                'r.menu_check_strictly as menuCheckStrictly',
-                'r.dept_check_strictly as deptCheckStrictly',
-                'r.status',
-                'r.del_flag as delFlag',
-                'r.create_time as createTime',
-                'r.remark'
-            ])
-            ->get();
+            ->select(self::SELECT_PARAMS);
     }
 
 }

@@ -9,6 +9,8 @@ use App\Admin\Model\SysRoleMenu;
 use App\Admin\Model\SysUserRole;
 use App\Admin\Service\System\ISysRoleService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -32,11 +34,11 @@ class SysRoleServiceImpl implements ISysRoleService
      * 通过角色ID查询角色
      *
      * @param int $roleId 角色ID
-     * @return mixed 角色对象信息
+     * @return Builder|Model|object|null 角色对象信息
      */
     function selectRoleById(int $roleId)
     {
-        // TODO: Implement selectRoleById() method.
+        return SysRole::selectRoleById($roleId);
     }
 
 

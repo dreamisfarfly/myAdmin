@@ -44,6 +44,11 @@ Route::prefix('/system/role')->group(function(){
      */
     Route::get('/list','SysRoleController@list');
 
+    /**
+     * 详情
+     */
+    Route::get('/{roleId}','SysRoleController@getInfo')->where('id','[0-9]+');
+
 });
 
 /**

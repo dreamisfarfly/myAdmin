@@ -49,9 +49,13 @@ class SysRoleController extends BaseController
     /**
      * 根据角色编号获取详细信息
      */
-    public function getInfo()
+    public function getInfo(int $roleId): JsonResponse
     {
         Authentication::hasPermit('system:role:query');
+        return (new AjaxResult())
+            ->success(
+                $this->sysRoleService->selectRoleById($roleId)
+            );
     }
 
     /**
