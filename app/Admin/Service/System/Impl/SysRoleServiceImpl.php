@@ -10,6 +10,7 @@ use App\Admin\Model\SysUserRole;
 use App\Admin\Service\System\ISysRoleService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -100,10 +101,21 @@ class SysRoleServiceImpl implements ISysRoleService
     /**
      * 查询所有角色
      *
-     * @return mixed 角色列表
+     * @return Builder[]|Collection 角色列表
      */
     function selectRoleAll()
     {
-        // TODO: Implement selectRoleAll() method.
+        return SysRole::selectRoleAll();
+    }
+
+    /**
+     * 根据用户ID获取角色选择框列表
+     *
+     * @param int $userId 用户ID
+     * @return \Illuminate\Support\Collection 选中角色ID列表
+     */
+    function selectRoleListByUserId(int $userId): \Illuminate\Support\Collection
+    {
+        return SysRole::selectRoleListByUserId($userId);
     }
 }

@@ -17,4 +17,17 @@ interface ISysPostService
      */
     function selectPostList(array $queryParam);
 
+    /**
+     * 查询所有岗位
+     *
+     * @return mixed 岗位列表
+     */
+    function selectPostAll();
+
+    /**
+     * @param int $userId
+     * @return mixed
+     */
+    function selectPostListByUserId(int $userId);
+
 }

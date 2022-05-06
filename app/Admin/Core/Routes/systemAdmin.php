@@ -32,6 +32,12 @@ Route::prefix('/system/user')->group(function(){
      */
     Route::get('/list', 'SysUserController@list');
 
+    /**
+     * 用户详情
+     */
+    Route::get('/{userId?}', 'SysUserController@getInfo')
+        ->where('userId','[0-9]+');
+
 });
 
 /**
@@ -47,7 +53,8 @@ Route::prefix('/system/role')->group(function(){
     /**
      * 详情
      */
-    Route::get('/{roleId}','SysRoleController@getInfo')->where('id','[0-9]+');
+    Route::get('/{roleId}','SysRoleController@getInfo')
+        ->where('roleId','[0-9]+');
 
 });
 
@@ -69,12 +76,14 @@ Route::prefix('/system/dict/type')->group(function(){
     /**
      * 详情
      */
-    Route::get('/{id}', 'SysDictTypeController@getInfo')->where('id','[0-9]+');
+    Route::get('/{id}', 'SysDictTypeController@getInfo')
+        ->where('id','[0-9]+');
 
     /**
      * 更新
      */
-    Route::put('/{id}', 'SysDictTypeController@edit')->where('id','[0-9]+');
+    Route::put('/{id}', 'SysDictTypeController@edit')
+        ->where('id','[0-9]+');
 
     /**
      * 删除
@@ -102,7 +111,8 @@ Route::prefix('/system/dict/data')->group(function(){
     /**
      * 详情
      */
-    Route::get('/{dictCode}', 'SysDictDataController@getInfo')->where('dictCode','[0-9]+');
+    Route::get('/{dictCode}', 'SysDictDataController@getInfo')
+        ->where('dictCode','[0-9]+');
 
     /**
      * 根据字典类型查询字典数据信息

@@ -4,6 +4,8 @@ namespace App\Admin\Model;
 
 use App\Admin\Core\Model\BaseModel;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * 岗位表
@@ -41,5 +43,39 @@ class SysPost extends BaseModel
                 ->select(self::SELECT_PARAMS)
         );
     }
+
+    /**
+     * 查询所有岗位
+     *
+     * @return Builder[]|Collection 岗位列表
+     */
+    public static function selectPostAll()
+    {
+        return self::query()
+            ->select(self::SELECT_PARAMS)
+            ->get();
+    }
+
+    /**
+     * 根据用户ID获取岗位选择框列表
+     *
+     * @param int $userId 用户ID
+     * @return \Illuminate\Support\Collection 选中岗位ID列表
+     */
+    public static function selectPostListByUserId(int $userId): \Illuminate\Support\Collection
+    {
+        return self::query()
+            ->from('sys_post as p')
+            ->leftJoin('sys_user_post as up',function($query){
+                $query->on('up.post_id', '=', 'p.post_id');
+            })
+            ->leftJoin('sys_user as u', function($query){
+                $query->on('u.user_id', '=', 'up.user_id');
+            })
+            ->where('u.user_id',$userId)
+            ->pluck('p.post_id');
+    }
+
+
 
 }

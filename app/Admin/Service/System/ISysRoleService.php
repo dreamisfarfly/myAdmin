@@ -55,4 +55,12 @@ interface ISysRoleService
      */
     function selectRoleAll();
 
+    /**
+     * 根据用户ID获取角色选择框列表
+     *
+     * @param int $userId 用户ID
+     * @return mixed 选中角色ID列表
+     */
+    function selectRoleListByUserId(int $userId);
+
 }

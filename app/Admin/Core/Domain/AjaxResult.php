@@ -15,6 +15,15 @@ use Illuminate\Support\Facades\Response;
 class AjaxResult
 {
 
+    /** @var string 状态码 */
+    const CODE_TAG = "code";
+
+    /** @var string 返回内容  */
+    const MSG_TAG = "msg";
+
+    /** @var string 数据对象 */
+    const DATA_TAG = "data";
+
     /**
      * put加带数据
      * @var array
@@ -28,7 +37,7 @@ class AjaxResult
      */
     public function put($putData): AjaxResult
     {
-        $this->putData = $putData;
+        $this->putData = array_merge($this->putData,$putData);
         return $this;
     }
 
@@ -72,11 +81,11 @@ class AjaxResult
     public function standardOutput($code, $msg, $data = null): JsonResponse
     {
         $jsonData = [
-            'code' => $code,
-            'msg' => $msg,
+            self::CODE_TAG => $code,
+            self::MSG_TAG => $msg,
         ];
         if($data != null)
-            $jsonData['data'] = $data;
+            $jsonData[self::DATA_TAG] = $data;
         if(count($this->putData) != 0)
             $jsonData = array_merge($jsonData,$this->putData);
         return Response::json($jsonData,HttpStatus::SUCCESS);

@@ -48,6 +48,7 @@ class SysRole extends BaseModel
         return self::customPagination(
             self::query()
                 ->from('sys_role as r')
+                ->where('r.del_flag', 0)
                 ->when(isset($queryParam['roleName']),function($query)use($queryParam){
                   $query->where('r.role_name', 'like', $queryParam['roleName'].'%');
                 })->when(isset($queryParam['roleKey']),function($query)use($queryParam){
@@ -64,6 +65,19 @@ class SysRole extends BaseModel
                 })
                 ->select(self::SELECT_PARAMS)
         );
+    }
+
+    /**
+     * 查询全部角色
+     * @return Builder[]|Collection
+     */
+    static function selectRoleAll()
+    {
+        return self::query()
+            ->from('sys_role as r')
+            ->where('r.del_flag', 0)
+            ->select(self::SELECT_PARAMS)
+            ->get();
     }
 
     /**
@@ -105,6 +119,26 @@ class SysRole extends BaseModel
     }
 
     /**
+     * 根据用户ID获取角色选择框列表
+     *
+     * @param int $userId 用户ID
+     * @return \Illuminate\Support\Collection 选中角色ID列表
+     */
+    public static function selectRoleListByUserId(int $userId): \Illuminate\Support\Collection
+    {
+        return self::query()
+            ->from('sys_role as r')
+            ->leftJoin('sys_user_role as ur', function($query){
+                $query->on('ur.role_id', '=', 'r.role_id');
+            })
+            ->leftJoin('sys_user as u', function($query){
+                $query->on('u.user_id', '=', 'ur.user_id');
+            })
+            ->where('u.user_id', $userId)
+            ->pluck('r.role_id');
+    }
+
+    /**
      * 查询
      * @return Builder
      */
@@ -122,6 +156,16 @@ class SysRole extends BaseModel
                 $query->on('d.dept_id', '=', 'u.dept_id');
             })
             ->select(self::SELECT_PARAMS);
+    }
+
+    /**
+     * 是不是管理员角色
+     * @param int|null $roleId
+     * @return bool
+     */
+    public static function isAdmin(?int $roleId): bool
+    {
+        return 1 == $roleId;
     }
 
 }
