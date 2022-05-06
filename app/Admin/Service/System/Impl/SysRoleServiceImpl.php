@@ -20,11 +20,12 @@ class SysRoleServiceImpl implements ISysRoleService
     /**
      * 根据条件分页查询角色数据
      *
+     * @param array $queryParam 查询参数
      * @return LengthAwarePaginator
      */
-    public function selectRoleList(): LengthAwarePaginator
+    public function selectRoleList(array $queryParam): LengthAwarePaginator
     {
-        return SysRole::selectRoleList();
+        return SysRole::selectRoleList($queryParam);
     }
 
     /**

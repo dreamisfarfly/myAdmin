@@ -11,9 +11,10 @@ interface ISysRoleService
     /**
      * 根据条件分页查询角色数据
      *
+     * @param array $queryParam 查询参数
      * @return mixed
      */
-    function selectRoleList();
+    function selectRoleList(array $queryParam);
 
     /**
      * 通过角色ID查询角色

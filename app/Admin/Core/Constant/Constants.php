@@ -30,4 +30,9 @@ interface Constants
      */
     const TOKEN_PREFIX = "Bearer ";
 
+    /**
+     * 参数管理 cache key
+     */
+    const SYS_CONFIG_KEY = 'sys_config:';
+
 }

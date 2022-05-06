@@ -103,6 +103,20 @@ class TokenService
     }
 
     /**
+     * 验证令牌有效期，相差不足20分钟，自动刷新缓存
+     *
+     * @param array $loginUser
+     */
+    public function verifyToken(array $loginUser)
+    {
+        $expireTime = $loginUser['expireTime'];
+        if($expireTime - time() <= self::MILLIS_MINUTE_TEN)
+        {
+            self::refreshToken($loginUser);
+        }
+    }
+
+    /**
      * 刷新令牌有效期
      *
      * @param array 登录信息

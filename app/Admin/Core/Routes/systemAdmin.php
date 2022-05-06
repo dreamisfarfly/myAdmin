@@ -152,6 +152,17 @@ Route::prefix('/system/post')->group(function(){
 
 });
 
+/**
+ * 参数配置
+ */
+Route::prefix('/system/config')->group(function(){
+
+    /**
+     * 根据参数键名查询参数值
+     */
+    Route::get('/configKey/{configKey}','SysConfigController@getConfigKey');
+
+});
 
 Route::namespace('Monitor')->prefix('monitor')->group(function(){
 

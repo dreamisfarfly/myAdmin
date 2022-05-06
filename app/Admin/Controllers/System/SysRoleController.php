@@ -7,6 +7,7 @@ use App\Admin\Core\Domain\AjaxResult;
 use App\Admin\Core\Exception\ParametersException;
 use App\Admin\Core\Security\Authentication;
 use App\Admin\Request\System\Ids;
+use App\Admin\Request\System\SysRoleListRequest;
 use App\Admin\Service\System\Impl\SysRoleServiceImpl;
 use App\Admin\Service\System\ISysRoleService;
 use Illuminate\Http\JsonResponse;
@@ -35,10 +36,14 @@ class SysRoleController extends BaseController
     /**
      * 角色列表
      */
-    public function list(): JsonResponse
+    public function list(SysRoleListRequest $sysRoleListRequest): JsonResponse
     {
         Authentication::hasPermit('system:role:list');
-        return $this->getDataTable($this->sysRoleService->selectRoleList());
+        return $this->getDataTable(
+            $this->sysRoleService->selectRoleList(
+                $sysRoleListRequest->getParamsData(['roleName','roleKey','status','beginTime','endTime'])
+            )
+        );
     }
 
     /**

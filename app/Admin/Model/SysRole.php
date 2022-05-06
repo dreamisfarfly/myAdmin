@@ -22,13 +22,28 @@ class SysRole extends BaseModel
     /**
      * 根据条件分页查询角色数据
      *
+     * @param array $queryParam 查询参数
      * @return LengthAwarePaginator
      */
-    static function selectRoleList(): LengthAwarePaginator
+    static function selectRoleList(array $queryParam): LengthAwarePaginator
     {
         return self::customPagination(
             self::query()
-              ->select([
+                ->when(isset($queryParam['roleName']),function($query)use($queryParam){
+                  $query->where('role_name', 'like', $queryParam['roleName'].'%');
+                })->when(isset($queryParam['roleKey']),function($query)use($queryParam){
+                  $query->where('role_key', 'like', $queryParam['roleKey'].'%');
+                })
+                ->when(isset($queryParam['status']),function($query)use($queryParam){
+                  $query->where('status', $queryParam['status']);
+                })
+                ->when(isset($queryParam['beginTime']),function($query)use($queryParam){
+                    $query->where('create_time', '>=', $queryParam['beginTime']);
+                })
+                ->when(isset($queryParam['endTime']),function($query)use($queryParam){
+                    $query->where('create_time', '<=', $queryParam['endTime']);
+                })
+                ->select([
                   'role_id as roleId',
                   'role_name as roleName',
                   'role_key as roleKey',

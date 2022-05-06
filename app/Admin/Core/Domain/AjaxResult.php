@@ -43,6 +43,16 @@ class AjaxResult
     }
 
     /**
+     * 返回成功消息
+     * @param $msg
+     * @return JsonResponse
+     */
+    public function msg($msg): JsonResponse
+    {
+        return $this->standardOutput(CustomStatus::SUCCESS, $msg);
+    }
+
+    /**
      * 操作失败
      * @param string $msg
      * @return JsonResponse
