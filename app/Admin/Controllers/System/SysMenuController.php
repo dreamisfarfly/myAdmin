@@ -78,9 +78,16 @@ class SysMenuController extends BaseController
     /**
      * 加载对应角色菜单列表树
      */
-    public function roleMenuTreeSelect()
+    public function roleMenuTreeSelect(int $roleId): JsonResponse
     {
-
+        $loginUser = $this->tokenService->getLoginUser();
+        $menus = $this->sysMenuService->selectMenuList([],$loginUser['sysUser']['userId']);
+        return (new AjaxResult())
+            ->put([
+                'checkedKeys' => $this->sysMenuService->selectMenuListByRoleId($roleId),
+                'menus' => $this->sysMenuService->buildMenuTreeSelect($menus->toArray())
+            ])
+            ->success();
     }
 
     /**

@@ -6,6 +6,7 @@ use App\Admin\Core\Security\SecurityUtils;
 use App\Admin\Core\Utils\MenuUtil;
 use App\Admin\Core\Utils\TreeSelectUtil;
 use App\Admin\Model\SysMenu;
+use App\Admin\Model\SysRole;
 use App\Admin\Service\System\ISysMenuService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -72,5 +73,23 @@ class SysMenuServiceImpl implements ISysMenuService
     function buildMenuTreeSelect(array $menus): array
     {
         return TreeSelectUtil::collect($menus,0,'menuId', 'menuName');
+    }
+
+    /**
+     * 根据角色ID查询菜单树信息
+     *
+     * @param int $roleId 角色ID
+     * @return mixed 选中菜单列表
+     */
+    function selectMenuListByRoleId(int $roleId)
+    {
+        $role = SysRole::selectRoleById($roleId);
+        $menuList = SysMenu::selectMenuListByRoleIdAssociationShow($roleId,$role['menuCheckStrictly']);
+        $menuIds = [];
+        foreach ($menuList as $item)
+        {
+            array_push($menuIds,$item['menuId']);
+        }
+        return $menuIds;
     }
 }

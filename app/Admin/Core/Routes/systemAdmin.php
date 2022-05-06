@@ -126,6 +126,13 @@ Route::prefix('/system/menu')->group(function(){
      */
     Route::get('/treeselect', 'SysMenuController@treeSelect');
 
+    /**
+     * 加载对应角色菜单列表树
+     */
+    Route::get('/roleMenuTreeselect/{roleId}', 'SysMenuController@roleMenuTreeSelect')
+        ->where('roleId','[0-9]+');
+
+
 });
 
 /**

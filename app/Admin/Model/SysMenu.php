@@ -163,4 +163,33 @@ class SysMenu extends BaseModel
             ->get();
     }
 
+    /**
+     * 根据角色ID查询菜单树信息
+     *
+     * @param int $roleId 角色ID
+     * @param bool $menuCheckStrictly 菜单树选择项是否关联显示
+     * @return mixed 选中菜单列表
+     */
+    public static function selectMenuListByRoleIdAssociationShow(int $roleId, bool $menuCheckStrictly)
+    {
+        return self::query()
+            ->from('sys_menu as m')
+            ->leftJoin('sys_role_menu as rm',function ($join){
+                $join->on('m.menu_id', '=', 'rm.menu_id');
+            })
+            ->where('rm.role_id', $roleId)
+            ->when($menuCheckStrictly,function($query)use($roleId){
+                $query->whereNotIn('m.menu_id',function($query)use($roleId){
+                    $query->select('m.parent_id')->from('sys_menu as m')
+                        ->join('sys_role_menu as rm',function($query)use($roleId){
+                            $query->on('m.menu_id','=','rm.menu_id')->where('rm.role_id',$roleId);
+                        });
+                });
+            })
+            ->orderBy('m.parent_id')
+            ->orderBy('m.order_num')
+            ->select(['m.menu_id as menuId'])
+            ->get();
+    }
+
 }

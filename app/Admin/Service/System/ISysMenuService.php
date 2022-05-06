@@ -44,4 +44,12 @@ interface ISysMenuService
      */
     function buildMenuTreeSelect(array $menus);
 
+    /**
+     * 根据角色ID查询菜单树信息
+     *
+     * @param int $roleId 角色ID
+     * @return mixed 选中菜单列表
+     */
+    function selectMenuListByRoleId(int $roleId);
+
 }
