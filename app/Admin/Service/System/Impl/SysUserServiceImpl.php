@@ -19,11 +19,12 @@ class SysUserServiceImpl implements ISysUserService
     /**
      * 根据条件分页查询用户列表
      *
+     * @param array $queryParam 查询参数
      * @return LengthAwarePaginator
      */
-    function selectUserList(): LengthAwarePaginator
+    function selectUserList(array $queryParam): LengthAwarePaginator
     {
-        return SysUser::selectUserList();
+        return SysUser::selectUserList($queryParam);
     }
 
     /**

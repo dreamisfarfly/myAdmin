@@ -13,10 +13,10 @@ class SecurityUtils
     /**
      * 是否为管理员
      *
-     * @param int $userId 用户ID
+     * @param int|null $userId 用户ID
      * @return bool 结果
      */
-    public static function isAdmin(int $userId): bool
+    public static function isAdmin(?int $userId): bool
     {
         return 1 == $userId;
     }

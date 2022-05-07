@@ -13,9 +13,10 @@ interface ISysUserService
     /**
      * 根据条件分页查询用户列表
      *
+     * @param array $queryParam 查询参数
      * @return mixed
      */
-    function selectUserList();
+    function selectUserList(array $queryParam);
 
     /**
      * 通过用户ID查询用户

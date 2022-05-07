@@ -45,13 +45,61 @@ class SysUser extends BaseModel
     /**
      * 根据条件分页查询用户数据
      *
+     * @param array $queryParam
      * @return LengthAwarePaginator
      */
-    public static function selectUserList(): LengthAwarePaginator
+    public static function selectUserList(array $queryParam = []): LengthAwarePaginator
     {
         return self::customPagination(
             self::query()
-            ->select(self::SELECT_PARAMS)
+                ->from('sys_user as u')
+                ->leftJoin('sys_dept as d', function($query){
+                    $query->on('u.dept_id', '=', 'd.dept_id');
+                })
+                ->when(isset($queryParam['userName']),function($query) use($queryParam){
+                    $query->where('u.user_name', 'like', $queryParam['userName'].'%');
+                })
+                ->when(isset($queryParam['status']),function($query) use($queryParam){
+                    $query->where('u.status', $queryParam['status']);
+                })
+                ->when(isset($queryParam['beginTime']),function($query) use($queryParam){
+                    $query->where('u.create_time', '>=', $queryParam['beginTime']);
+                })
+                ->when(isset($queryParam['endTime']),function($query) use($queryParam){
+                    $query->where('u.create_time', '<=', $queryParam['endTime']);
+                })
+                ->when(isset($queryParam['phonenumber']),function($query) use($queryParam){
+                    $query->where('u.phonenumber', 'like', $queryParam['phonenumber'].'%');
+                })
+                ->when(isset($queryParam['deptId']) && $queryParam['deptId'] != 0,function($query) use($queryParam){
+                    $query->where(function($query) use($queryParam){
+                        $query->where('u.dept_id', $queryParam['deptId'])
+                            ->orWhereIn('u.dept_id',function($query) use($queryParam){
+                                $query->select('t.dept_id')->from('sys_dept as t')
+                                    ->whereRaw('find_in_set(?,ancestors)',$queryParam['deptId']);
+                            });
+                    });
+                })
+                ->select([
+                    'u.user_id as userId',
+                    'u.dept_id as deptId',
+                    'u.nick_name as nickName',
+                    'u.user_name as userName',
+                    'u.email',
+                    'u.avatar',
+                    'u.phonenumber',
+                    'u.password',
+                    'u.sex',
+                    'u.status',
+                    'u.del_flag as delFlag',
+                    'u.login_ip as loginIp',
+                    'u.login_date as loginDate',
+                    'u.create_by as createBy',
+                    'u.create_time as createTime',
+                    'u.remark',
+                    'd.dept_name as deptName',
+                    'd.leader'
+                ])
         );
     }
 

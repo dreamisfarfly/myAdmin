@@ -7,6 +7,7 @@ use App\Admin\Core\Domain\AjaxResult;
 use App\Admin\Core\Security\Authentication;
 use App\Admin\Core\Security\SecurityUtils;
 use App\Admin\Model\SysRole;
+use App\Admin\Request\System\SysUserListRequest;
 use App\Admin\Service\System\Impl\SysPostServiceImpl;
 use App\Admin\Service\System\Impl\SysRoleServiceImpl;
 use App\Admin\Service\System\Impl\SysUserServiceImpl;
@@ -54,10 +55,21 @@ class SysUserController extends BaseController
     /**
      * 获取用户列表
      */
-    public function list(): JsonResponse
+    public function list(SysUserListRequest $sysUserListRequest): JsonResponse
     {
         Authentication::hasPermit('system:user:list');
-        return $this->getDataTable($this->sysUserService->selectUserList());
+        return $this->getDataTable(
+            $this->sysUserService->selectUserList(
+                $sysUserListRequest->getParamsData([
+                    'userName',
+                    'phonenumber',
+                    'status',
+                    'deptId',
+                    'beginTime',
+                    'endTime'
+                ])
+            )
+        );
     }
 
     /**
