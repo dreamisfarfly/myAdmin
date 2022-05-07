@@ -2,12 +2,16 @@
 
 namespace App\Admin\Controllers\System;
 
+use App\Admin\Core\Constant\UserConstants;
 use App\Admin\Core\Controller\BaseController;
 use App\Admin\Core\Domain\AjaxResult;
 use App\Admin\Core\Security\Authentication;
 use App\Admin\Core\Security\SecurityUtils;
+use App\Admin\Core\Security\TokenService;
 use App\Admin\Model\SysRole;
+use App\Admin\Model\SysUser;
 use App\Admin\Request\System\SysUserListRequest;
+use App\Admin\Request\System\SysUserRequest;
 use App\Admin\Service\System\Impl\SysPostServiceImpl;
 use App\Admin\Service\System\Impl\SysRoleServiceImpl;
 use App\Admin\Service\System\Impl\SysUserServiceImpl;
@@ -40,16 +44,23 @@ class SysUserController extends BaseController
     private ISysPostService $sysPostService;
 
     /**
+     * @var TokenService
+     */
+    private TokenService $tokenService;
+
+    /**
      * @param SysUserServiceImpl $sysUserService
      * @param SysPostServiceImpl $sysPostService
      * @param SysRoleServiceImpl $sysRoleServiceImpl
+     * @param TokenService $tokenService
      */
     public function __construct(SysUserServiceImpl $sysUserService, SysPostServiceImpl $sysPostService,
-                                SysRoleServiceImpl $sysRoleServiceImpl)
+                                SysRoleServiceImpl $sysRoleServiceImpl, TokenService $tokenService)
     {
         $this->sysUserService = $sysUserService;
         $this->sysRoleService = $sysRoleServiceImpl;
         $this->sysPostService = $sysPostService;
+        $this->tokenService = $tokenService;
     }
 
     /**
@@ -113,9 +124,28 @@ class SysUserController extends BaseController
     /**
      * 新增用户
      */
-    public function add()
+    public function add(SysUserRequest $sysUserRequest): JsonResponse
     {
         Authentication::hasPermit('system:user:add');
+        $sysUser = $sysUserRequest->getParamsData(['deptId', 'email', 'nickName', 'password', 'phonenumber', 'postIds', 'remark', 'roleIds', 'sex', 'status', 'userName']);
+        if(UserConstants::NOT_UNIQUE == $this->sysUserService->checkUserNameUnique($sysUser['userName']))
+        {
+            return (new AjaxResult())->error('新增用户'.$sysUser['userName'].'失败，登录账号已存在');
+        }
+        if(isset($sysUser['phonenumber']) &&
+            UserConstants::NOT_UNIQUE == $this->sysUserService->checkAssignUnique(['phonenumber'=>$sysUser['phonenumber']]))
+        {
+            return (new AjaxResult())->error('新增用户'.$sysUser['phonenumber'].'失败，手机号码已存在');
+        }
+        if(isset($sysUser['email']) &&
+            UserConstants::NOT_UNIQUE == $this->sysUserService->checkAssignUnique(['email'=>$sysUser['email']]))
+        {
+            return (new AjaxResult())->error('新增用户'.$sysUser['phonenumber'].'失败，手机号码已存在');
+        }
+        $loginUser = $this->tokenService->getLoginUser();
+        $sysUser['createBy'] = $loginUser['sysUser']['userName'];
+        $sysUser['password'] = SysUser::getPassword($sysUser['password']);
+        return $this->toAjax($this->sysUserService->insertUser($sysUser));
     }
 
     /**

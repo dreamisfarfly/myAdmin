@@ -38,6 +38,29 @@ class BaseModel extends Model
     }
 
     /**
+     * 驼峰命名转下划线命名
+     *
+     * @param array $camelCapsArray
+     * @param array|null $removeKey
+     * @param string $separator
+     * @return array
+     */
+    public static function uncamelize(array $camelCapsArray, ?array $removeKey = null, string $separator='_')
+    {
+        $keyArray = array_keys($camelCapsArray);
+        $temp = [];
+        foreach ($keyArray as $item)
+        {
+            if(!($removeKey != null && in_array($item,$removeKey)))
+            {
+                $key = strtolower(preg_replace('/([a-z])([A-Z])/', "$1" . $separator . "$2", $item));
+                $temp[$key] = $camelCapsArray[$item];
+            }
+        }
+        return $temp;
+    }
+
+    /**
      * Prepare a date for array / JSON serialization.
      *
      * @param DateTimeInterface $date

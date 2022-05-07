@@ -17,6 +17,8 @@ class SysUser extends BaseModel
 
     protected $table = 'sys_user';
 
+    protected $primaryKey = 'user_id';
+
     /**
      * 查询参数
      */
@@ -125,6 +127,61 @@ class SysUser extends BaseModel
         return self::selectUserVo()
             ->where('u.user_id', $userId)
             ->first();
+    }
+
+    /**
+     * 校验用户名称是否唯一
+     *
+     * @param string $userName 用户名称
+     * @return int 结果
+     */
+    public static function checkUserNameUnique(string $userName): int
+    {
+        return self::query()
+            ->where('user_name', $userName)
+            ->limit(1)
+            ->count();
+    }
+
+    /**
+     * 根据条件查询系统用户
+     *
+     * @param array $user
+     * @return Builder|Model|mixed|object|null
+     */
+    public static function selectUserByUser(array $user)
+    {
+        return self::query()
+            ->when(isset($user['phonenumber']),function($query)use($user){
+                $query->where('phonenumber', $user['phonenumber']);
+            })
+            ->when(isset($user['email']),function($query)use($user){
+                $query->where('email', $user['email']);
+            })
+            ->select(self::SELECT_PARAMS)
+            ->first();
+    }
+
+    /**
+     * 新增用户信息
+     *
+     * @param array $user 用户信息
+     * @return int 结果
+     */
+    public static function insertUser(array $user): int
+    {
+        $user['createTime'] = date('Y-m-d H:i:s');
+        return self::query()->insertGetId(self::uncamelize($user,['roleIds','postIds']));
+    }
+
+    /**
+     * 获取加密密码
+     * @param string $password
+     * @return string
+     */
+    public static function getPassword(string $password): string
+    {
+        return md5($password);
     }
 
     /**

@@ -26,4 +26,38 @@ interface ISysUserService
      */
     function selectUserById(int $userId);
 
+    /**
+     * 校验用户名称是否唯一
+     *
+     * @param string $userName 用户名称
+     * @return mixed 结果
+     */
+    function checkUserNameUnique(string $userName);
+
+    /**
+     * 检测指定条件是否唯一
+     *
+     * @param array $user
+     * @param int|null $userId
+     * @return mixed
+     */
+    function checkAssignUnique(array $user, ?int $userId = null);
+
+    /**
+     * 新增用户信息
+     *
+     * @param array $user 用户信息
+     * @return mixed 结果
+     */
+    function insertUser(array $user);
+
+    /**
+     * 新增用户岗位信息
+     *
+     * @param array $postIds 岗位数组
+     * @param int $userId 用户编号
+     * @return mixed
+     */
+    function insertUserPost(array $postIds, int $userId);
+
 }
