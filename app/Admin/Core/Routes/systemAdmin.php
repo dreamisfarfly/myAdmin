@@ -36,7 +36,18 @@ Route::prefix('/system/user')->group(function(){
      * 用户详情
      */
     Route::get('/{userId?}', 'SysUserController@getInfo')
-        ->where('userId','[0-9]+');
+        ->where('userId','^[1-9]\d*$');
+
+    /**
+     * 新增用户
+     */
+    Route::post('/', 'SysUserController@add');
+
+    /**
+     * 修改用户
+     */
+    Route::put('/{userId}', 'SysUserController@edit')
+        ->where('userId','^[1-9]\d*$');
 
 });
 
@@ -54,7 +65,7 @@ Route::prefix('/system/role')->group(function(){
      * 详情
      */
     Route::get('/{roleId}','SysRoleController@getInfo')
-        ->where('roleId','[0-9]+');
+        ->where('roleId','^[1-9]\d*$');
 
 });
 
@@ -77,13 +88,13 @@ Route::prefix('/system/dict/type')->group(function(){
      * 详情
      */
     Route::get('/{id}', 'SysDictTypeController@getInfo')
-        ->where('id','[0-9]+');
+        ->where('id','^[1-9]\d*$');
 
     /**
      * 更新
      */
     Route::put('/{id}', 'SysDictTypeController@edit')
-        ->where('id','[0-9]+');
+        ->where('id','^[1-9]\d*$');
 
     /**
      * 删除
@@ -112,7 +123,7 @@ Route::prefix('/system/dict/data')->group(function(){
      * 详情
      */
     Route::get('/{dictCode}', 'SysDictDataController@getInfo')
-        ->where('dictCode','[0-9]+');
+        ->where('dictCode','^[1-9]\d*$');
 
     /**
      * 根据字典类型查询字典数据信息
@@ -140,7 +151,7 @@ Route::prefix('/system/menu')->group(function(){
      * 加载对应角色菜单列表树
      */
     Route::get('/roleMenuTreeselect/{roleId}', 'SysMenuController@roleMenuTreeSelect')
-        ->where('roleId','[0-9]+');
+        ->where('roleId','^[1-9]\d*$');
 
 
 });
