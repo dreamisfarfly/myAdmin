@@ -60,4 +60,46 @@ interface ISysUserService
      */
     function insertUserPost(array $postIds, int $userId);
 
+    /**
+     * 校验用户是否允许操作
+     *
+     * @param ?int $userId 用户编号
+     * @return mixed
+     */
+    function checkUserAllowed(?int $userId = null);
+
+    /**
+     * 修改用户信息
+     *
+     * @param int $userId 用户编号
+     * @param array $user 用户信息
+     * @return mixed 结果
+     */
+    function updateUser(int $userId, array $user);
+
+    /**
+     * 更该用户状态信息
+     *
+     * @param int $userId 用户编号
+     * @param array $user 用户信息
+     * @return mixed 结果
+     */
+    function updateUserStatus(int $userId, array $user);
+
+    /**
+     * 批量删除用户信息
+     *
+     * @param array $ids 需要删除的用户ID
+     * @return mixed 结果
+     */
+    function deleteUserByIds(array $ids);
+
+    /**
+     * 更改密码
+     * @param int $userId
+     * @param array $user
+     * @return mixed
+     */
+    function resetPwd(int $userId, array $user);
+
 }

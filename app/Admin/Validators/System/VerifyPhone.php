@@ -21,6 +21,8 @@ class VerifyPhone implements Rule
      */
     public function passes($attribute, $value)
     {
+        if($value == null)
+            return true;
         if(preg_match('/^1[3|4|5|7|8]\d{9}$/',$value))
             return true;
         return false;

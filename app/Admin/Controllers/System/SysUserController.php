@@ -5,11 +5,15 @@ namespace App\Admin\Controllers\System;
 use App\Admin\Core\Constant\UserConstants;
 use App\Admin\Core\Controller\BaseController;
 use App\Admin\Core\Domain\AjaxResult;
+use App\Admin\Core\Exception\ParametersException;
 use App\Admin\Core\Security\Authentication;
 use App\Admin\Core\Security\SecurityUtils;
 use App\Admin\Core\Security\TokenService;
 use App\Admin\Model\SysRole;
 use App\Admin\Model\SysUser;
+use App\Admin\Request\System\EditSysUserRequest;
+use App\Admin\Request\System\ResetSysUserPwdRequest;
+use App\Admin\Request\System\SysUserChangeStatusRequest;
 use App\Admin\Request\System\SysUserListRequest;
 use App\Admin\Request\System\SysUserRequest;
 use App\Admin\Service\System\Impl\SysPostServiceImpl;
@@ -135,12 +139,12 @@ class SysUserController extends BaseController
         if(isset($sysUser['phonenumber']) &&
             UserConstants::NOT_UNIQUE == $this->sysUserService->checkAssignUnique(['phonenumber'=>$sysUser['phonenumber']]))
         {
-            return (new AjaxResult())->error('新增用户'.$sysUser['phonenumber'].'失败，手机号码已存在');
+            return (new AjaxResult())->error('新增用户'.$sysUser['userName'].'失败，手机号码已存在');
         }
         if(isset($sysUser['email']) &&
             UserConstants::NOT_UNIQUE == $this->sysUserService->checkAssignUnique(['email'=>$sysUser['email']]))
         {
-            return (new AjaxResult())->error('新增用户'.$sysUser['phonenumber'].'失败，手机号码已存在');
+            return (new AjaxResult())->error('新增用户'.$sysUser['userName'].'失败，邮箱账号已存在');
         }
         $loginUser = $this->tokenService->getLoginUser();
         $sysUser['createBy'] = $loginUser['sysUser']['userName'];
@@ -150,34 +154,68 @@ class SysUserController extends BaseController
 
     /**
      * 修改用户
+     * @throws ParametersException
      */
-    public function edit()
+    public function edit(int $userId, EditSysUserRequest $editSysUserRequest): JsonResponse
     {
         Authentication::hasPermit('system:user:edit');
+        $this->sysUserService->checkUserAllowed($userId);
+        $userInfo = $this->sysUserService->selectUserById($userId);
+        null != $userInfo?$userName=$userInfo['userName']:$userName='未知用户';
+        $sysUser = $editSysUserRequest->getParamsData(['deptId', 'email', 'nickName', 'phonenumber', 'postIds', 'remark', 'roleIds', 'sex', 'status']);
+        if(isset($sysUser['phonenumber']) &&
+            UserConstants::NOT_UNIQUE == $this->sysUserService->checkAssignUnique(['phonenumber'=>$sysUser['phonenumber']], $userId))
+        {
+            return (new AjaxResult())->error('修改用户'.$userName.'失败，手机号码已存在');
+        }
+        if(isset($sysUser['email']) &&
+            UserConstants::NOT_UNIQUE == $this->sysUserService->checkAssignUnique(['email'=>$sysUser['email']], $userId))
+        {
+            return (new AjaxResult())->error('修改用户'.$userName.'失败，邮箱账号已存在');
+        }
+        $loginUser = $this->tokenService->getLoginUser();
+        $sysUser['updateBy'] = $loginUser['sysUser']['userName'];
+        return $this->toAjax($this->sysUserService->updateUser($userId, $sysUser));
     }
 
     /**
      * 删除用户
+     * @throws ParametersException
      */
-    public function remove()
+    public function remove(string $ids): JsonResponse
     {
         Authentication::hasPermit('system:user:remove');
+        $ids = explode(',', $ids);
+        return $this->toAjax($this->sysUserService->deleteUserByIds($ids));
     }
 
     /**
      * 重置密码
+     * @throws ParametersException
      */
-    public function resetPwd()
+    public function resetPwd(ResetSysUserPwdRequest $resetSysUserPwdRequest): JsonResponse
     {
         Authentication::hasPermit('system:user:resetPwd');
+        $loginUser = $this->tokenService->getLoginUser();
+        $sysUser = $resetSysUserPwdRequest->getParamsData(['userId', 'password']);
+        $this->sysUserService->checkUserAllowed($sysUser['userId']);
+        $sysUser['updateBy'] = $loginUser['sysUser']['userName'];
+        $sysUser['password'] = SysUser::getPassword($sysUser['password']);
+        return $this->toAjax($this->sysUserService->resetPwd($sysUser['userId'],$sysUser));
     }
 
     /**
      * 状态修改
+     * @throws ParametersException
      */
-    public function changeStatus()
+    public function changeStatus(SysUserChangeStatusRequest $sysUserChangeStatusRequest): JsonResponse
     {
         Authentication::hasPermit('system:user:edit');
+        $loginUser = $this->tokenService->getLoginUser();
+        $sysUser = $sysUserChangeStatusRequest->getParamsData(['userId', 'status']);
+        $this->sysUserService->checkUserAllowed($sysUser['userId']);
+        $sysUser['updateBy'] = $loginUser['sysUser']['userName'];
+        return $this->toAjax($this->sysUserService->updateUserStatus($sysUser['userId'], $sysUser));
     }
 
 }

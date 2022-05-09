@@ -38,4 +38,26 @@ class SysUserRole extends BaseModel
         return self::query()->insert($roleList);
     }
 
+    /**
+     * 通过用户ID删除用户和角色关联
+     *
+     * @param int $userId 用户ID
+     * @return mixed 结果
+     */
+    static function deleteUserRoleByUserId(int $userId)
+    {
+        return self::query()->where('user_id', $userId)->delete();
+    }
+
+    /**
+     * 批量删除用户和角色关联
+     *
+     * @param array $userIds 需要删除的数据ID
+     * @return mixed 结果
+     */
+    static function deleteUserRole(array $userIds)
+    {
+        return self::query()->whereIn('user_id', $userIds)->delete();
+    }
+
 }

@@ -21,6 +21,8 @@ class VerifyId implements Rule
      */
     public function passes($attribute, $value): bool
     {
+        if($value == null)
+            return true;
         if(preg_match('/^[1-9]\d*$/',$value))
             return true;
         return false;

@@ -21,6 +21,8 @@ class VerifyEmail implements Rule
      */
     public function passes($attribute, $value): bool
     {
+        if($value == null)
+            return true;
         if(preg_match('/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/',$value))
             return true;
         return false;

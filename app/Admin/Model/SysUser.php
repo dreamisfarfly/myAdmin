@@ -175,6 +175,21 @@ class SysUser extends BaseModel
     }
 
     /**
+     * 修改用户信息
+     *
+     * @param int $userId 用户编号
+     * @param array $user 用户信息
+     * @return int
+     */
+    public static function updatetUser(int $userId, array $user): int
+    {
+        $user['updateTime'] = date('Y-m-d H:i:s');
+        return self::query()
+            ->where('user_id',$userId)
+            ->update(self::uncamelize($user,['roleIds','postIds', 'userId']));
+    }
+
+    /**
      * 获取加密密码
      * @param string $password
      * @return string
@@ -182,6 +197,17 @@ class SysUser extends BaseModel
     public static function getPassword(string $password): string
     {
         return md5($password);
+    }
+
+    /**
+     * 批量删除用户信息
+     *
+     * @param array $userIds 需要删除的用户ID
+     * @return mixed 结果
+     */
+    public static function deleteUserByIds(array $userIds)
+    {
+        return self::query()->whereIn('user_id', $userIds)->delete();
     }
 
     /**

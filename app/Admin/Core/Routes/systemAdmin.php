@@ -49,6 +49,22 @@ Route::prefix('/system/user')->group(function(){
     Route::put('/{userId}', 'SysUserController@edit')
         ->where('userId','^[1-9]\d*$');
 
+    /**
+     * 修改用户状态
+     */
+    Route::put('/changeStatus', 'SysUserController@changeStatus');
+
+    /**
+     * 重置用户密码
+     */
+    Route::put('/resetPwd', 'SysUserController@resetPwd');
+
+    /**
+     * 删除用户
+     */
+    Route::delete('/{ids}','SysUserController@remove')
+        ->where('ids','^\d+(,\d+)*$');
+
 });
 
 /**
