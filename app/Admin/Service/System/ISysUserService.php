@@ -19,6 +19,14 @@ interface ISysUserService
     function selectUserList(array $queryParam);
 
     /**
+     * 查询用户信息
+     *
+     * @param array $sysUser
+     * @return mixed
+     */
+    function selectUserByUserName(array $sysUser);
+
+    /**
      * 通过用户ID查询用户
      *
      * @param int $userId 用户ID

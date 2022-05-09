@@ -83,6 +83,18 @@ Route::prefix('/system/role')->group(function(){
     Route::post('/','SysRoleController@add');
 
     /**
+     * 更新角色
+     */
+    Route::put('/{roleId}','SysRoleController@edit')
+        ->where('roleId','^[1-9]\d*$');
+
+    /**
+     * 删除角色
+     */
+    Route::delete('/{roleIds}','SysRoleController@remove')
+        ->where('roleIds','^\d+(,\d+)*$');
+
+    /**
      * 状态修改
      */
     Route::put('/changeStatus','SysRoleController@changeStatus');

@@ -42,7 +42,10 @@ class SysRoleServiceImpl implements ISysRoleService
      */
     function selectRoleById(int $roleId)
     {
-        return SysRole::selectRoleById($roleId);
+        $info = SysRole::selectRoleById($roleId);
+        $info['deptCheckStrictly'] == 1 ? $info['deptCheckStrictly'] = true:$info['deptCheckStrictly'] = false;
+        $info['menuCheckStrictly'] == 1 ? $info['menuCheckStrictly'] = true:$info['menuCheckStrictly'] = false;
+        return $info;
     }
 
 
@@ -60,7 +63,7 @@ class SysRoleServiceImpl implements ISysRoleService
             self::checkRoleAllowed($id);
             $role = self::selectRoleById($id);
             if(self::countUserRoleByRoleId($id))
-                throw new ParametersException(printf('%1$s已分配,不能删除', $role->role_name));
+                throw new ParametersException($role['roleName'].'已分配,不能删除');
         }
         try {
             DB::beginTransaction();
@@ -198,4 +201,27 @@ class SysRoleServiceImpl implements ISysRoleService
         return $row;
     }
 
+    /**
+     * 修改保存角色信息
+     * @param int $roleId 角色编号
+     * @param array $sysRole 角色信息
+     * @return int 结果
+     */
+    function updateRole(int $roleId, array $sysRole): int
+    {
+        $row = 0;
+        try {
+            DB::beginTransaction();
+            // 修改角色信息
+            SysRole::updateRole($roleId,$sysRole);
+            // 删除角色与菜单关联
+            SysRoleMenu::deleteRoleMenuByRoleId($roleId);
+            $row = self::insertRoleMenu($roleId, $sysRole['menuIds']);
+            DB::commit();
+        }catch (Exception $exception){
+            Log::info($exception->getMessage());
+            DB::rollBack();
+        }
+        return $row;
+    }
 }

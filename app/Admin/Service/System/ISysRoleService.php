@@ -89,4 +89,12 @@ interface ISysRoleService
      */
     function insertRole(array $sysRole);
 
+    /**
+     * 修改保存角色信息
+     * @param int $roleId 角色编号
+     * @param array $sysRole 角色信息
+     * @return mixed 结果
+     */
+    function updateRole(int $roleId, array $sysRole);
+
 }

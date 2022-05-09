@@ -158,6 +158,9 @@ class SysUser extends BaseModel
             ->when(isset($user['email']),function($query)use($user){
                 $query->where('email', $user['email']);
             })
+            ->when(isset($user['userName']),function($query)use($user){
+                $query->where('user_name', $user['userName']);
+            })
             ->select(self::SELECT_PARAMS)
             ->first();
     }

@@ -201,7 +201,7 @@ class SysRole extends BaseModel
     {
         $sysRole['updateTime'] = date('Y-m-d H:i:s');
         return self::query()->where('role_id', $roleId)
-            ->update(self::uncamelize($sysRole,['roleId']));
+            ->update(self::uncamelize($sysRole,['roleId','menuIds','deptIds']));
     }
 
     /**

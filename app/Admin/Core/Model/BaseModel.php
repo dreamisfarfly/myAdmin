@@ -55,7 +55,6 @@ class BaseModel extends Model
             if(!($removeKey != null && in_array($item,$removeKey)))
             {
                 $key = strtolower(preg_replace('/([a-z])([A-Z])/', "$1" . $separator . "$2", $item));
-                Log::info($key);
                 $temp[$key] = $camelCapsArray[$item];
             }
         }

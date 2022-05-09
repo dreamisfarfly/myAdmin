@@ -23,7 +23,7 @@ class VerifyPositiveInteger implements Rule
     {
         if($value == null)
             return true;
-        if(preg_match('^[+]{0,1}(\d+)$',$value))
+        if(preg_match('/^[+]{0,1}(\d+)$/',$value))
             return true;
         return false;
     }

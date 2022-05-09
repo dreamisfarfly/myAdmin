@@ -19,13 +19,26 @@ class SysRoleMenu extends BaseModel
     /**
      * 批量删除角色菜单关联信息
      *
-     * @param array $ids 需要删除的数据ID
+     * @param array $roleIds 需要删除的数据ID
      * @return mixed 结果
      */
-    static function deleteRoleMenu(array $ids)
+    static function deleteRoleMenu(array $roleIds)
     {
         return self::query()
-            ->where('role_id', $ids)
+            ->whereIn('role_id', $roleIds)
+            ->delete();
+    }
+
+    /**
+     * 通过角色ID删除角色和菜单关联
+     *
+     * @param int $roleId 角色ID
+     * @return mixed 结果
+     */
+    static function deleteRoleMenuByRoleId(int $roleId)
+    {
+        return self::query()
+            ->where('role_id', $roleId)
             ->delete();
     }
 

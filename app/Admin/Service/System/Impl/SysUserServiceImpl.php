@@ -243,4 +243,15 @@ class SysUserServiceImpl implements ISysUserService
     {
         return SysUser::updatetUser($userId, $user);
     }
+
+    /**
+     * 查询用户信息
+     *
+     * @param array $sysUser
+     * @return mixed
+     */
+    function selectUserByUserName(array $sysUser)
+    {
+        return SysUser::selectUserByUser($sysUser);
+    }
 }
