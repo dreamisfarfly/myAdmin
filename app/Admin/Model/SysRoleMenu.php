@@ -29,4 +29,15 @@ class SysRoleMenu extends BaseModel
             ->delete();
     }
 
+    /**
+     * 新增角色菜单信息
+     *
+     * @param array $sysRoleMenu 角色菜单列表
+     * @return bool 结果
+     */
+    static function insertRoleMenu(array $sysRoleMenu): bool
+    {
+        return self::query()->insert($sysRoleMenu);
+    }
+
 }

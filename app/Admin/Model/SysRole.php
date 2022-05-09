@@ -139,6 +139,38 @@ class SysRole extends BaseModel
     }
 
     /**
+     * 根据条件查询系统角色
+     *
+     * @param array $sysRole 角色信息
+     * @return Builder|Model|mixed|object|null 结果
+     */
+    public static function selectRoleByRole(array $sysRole)
+    {
+        return self::query()
+            ->from('sys_role as r')
+            ->when(isset($sysRole['roleName']),function($query)use($sysRole){
+                $query->where('r.role_name', $sysRole['roleName']);
+            })
+            ->when(isset($sysRole['roleKey']),function($query)use($sysRole){
+                $query->where('r.role_key', $sysRole['roleKey']);
+            })
+            ->select(self::SELECT_PARAMS)
+            ->first();
+    }
+
+    /**
+     * 新增角色信息
+     *
+     * @param array $sysRole 角色信息
+     * @return int 结果
+     */
+    public static function insertRole(array $sysRole): int
+    {
+        $sysRole['createTime'] = date('Y-m-d H:i:s');
+        return self::query()->insertGetId(self::uncamelize($sysRole,['menuIds','deptIds']));
+    }
+
+    /**
      * 查询
      * @return Builder
      */
@@ -156,6 +188,20 @@ class SysRole extends BaseModel
                 $query->on('d.dept_id', '=', 'u.dept_id');
             })
             ->select(self::SELECT_PARAMS);
+    }
+
+    /**
+     * 修改角色信息
+     *
+     * @param int $roleId 角色编号
+     * @param array $sysRole 角色
+     * @return int 结果
+     */
+    public static function updateRole(int $roleId, array $sysRole): int
+    {
+        $sysRole['updateTime'] = date('Y-m-d H:i:s');
+        return self::query()->where('role_id', $roleId)
+            ->update(self::uncamelize($sysRole,['roleId']));
     }
 
     /**

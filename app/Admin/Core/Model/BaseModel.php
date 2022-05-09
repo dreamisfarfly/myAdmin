@@ -8,6 +8,7 @@ use DateTimeInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -54,6 +55,7 @@ class BaseModel extends Model
             if(!($removeKey != null && in_array($item,$removeKey)))
             {
                 $key = strtolower(preg_replace('/([a-z])([A-Z])/', "$1" . $separator . "$2", $item));
+                Log::info($key);
                 $temp[$key] = $camelCapsArray[$item];
             }
         }

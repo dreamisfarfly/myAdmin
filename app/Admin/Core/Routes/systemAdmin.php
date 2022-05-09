@@ -78,6 +78,16 @@ Route::prefix('/system/role')->group(function(){
     Route::get('/list','SysRoleController@list');
 
     /**
+     * 新增角色
+     */
+    Route::post('/','SysRoleController@add');
+
+    /**
+     * 状态修改
+     */
+    Route::put('/changeStatus','SysRoleController@changeStatus');
+
+    /**
      * 详情
      */
     Route::get('/{roleId}','SysRoleController@getInfo')

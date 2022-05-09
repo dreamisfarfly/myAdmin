@@ -63,4 +63,30 @@ interface ISysRoleService
      */
     function selectRoleListByUserId(int $userId);
 
+    /**
+     * 修改角色状态
+     *
+     * @param int $roleId 角色编号
+     * @param array $sysRole 角色信息
+     * @return mixed 结果
+     */
+    function updateRoleStatus(int $roleId, array $sysRole);
+
+    /**
+     * 校验角色权限是否唯一
+     *
+     * @param array $sysRole 角色信息
+     * @param int|null $roleId 角色编号
+     * @return mixed 结果
+     */
+    function checkAssignUnique(array $sysRole, ?int $roleId = null);
+
+    /**
+     * 新增保存角色信息
+     *
+     * @param array $sysRole 角色信息
+     * @return mixed 结果
+     */
+    function insertRole(array $sysRole);
+
 }

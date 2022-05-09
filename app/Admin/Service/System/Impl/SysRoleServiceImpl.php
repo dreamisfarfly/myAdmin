@@ -2,17 +2,20 @@
 
 namespace App\Admin\Service\System\Impl;
 
+use App\Admin\Core\Constant\UserConstants;
 use App\Admin\Core\Exception\ParametersException;
 use App\Admin\Model\SysRole;
 use App\Admin\Model\SysRoleDept;
 use App\Admin\Model\SysRoleMenu;
 use App\Admin\Model\SysUserRole;
 use App\Admin\Service\System\ISysRoleService;
+use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * 角色服务接口实现
@@ -67,7 +70,7 @@ class SysRoleServiceImpl implements ISysRoleService
             SysRoleDept::deleteRoleDept($roleIds);
             $row = SysRole::deleteRoleByIds($roleIds);
             DB::commit();
-        }catch (\Exception $exception){
+        }catch (Exception $exception){
             DB::rollBack();
             throw new ParametersException('删除失败');
         }
@@ -118,4 +121,81 @@ class SysRoleServiceImpl implements ISysRoleService
     {
         return SysRole::selectRoleListByUserId($userId);
     }
+
+    /**
+     * 修改角色状态
+     *
+     * @param int $roleId 角色编号
+     * @param array $sysRole 角色信息
+     * @return int 结果
+     */
+    function updateRoleStatus(int $roleId, array $sysRole): int
+    {
+        return SysRole::updateRole($roleId, $sysRole);
+    }
+
+    /**
+     * 校验角色权限是否唯一
+     *
+     * @param array $sysRole 角色信息
+     * @param int|null $roleId 角色编号
+     * @return string 结果
+     */
+    function checkAssignUnique(array $sysRole, ?int $roleId = null): string
+    {
+        $info = SysRole::selectRoleByRole($sysRole);
+        if($info != null && $info['roleId'] != $roleId)
+        {
+            return UserConstants::NOT_UNIQUE;
+        }
+        return UserConstants::UNIQUE;
+    }
+
+    /**
+     * 新增保存角色信息
+     *
+     * @param array $sysRole 角色信息
+     * @return int 结果
+     */
+    function insertRole(array $sysRole): int
+    {
+        $row = 0;
+        try {
+            DB::beginTransaction();
+            // 新增角色信息
+            $sysRoleId = SysRole::insertRole($sysRole);
+            $row = self::insertRoleMenu($sysRoleId, $sysRole['menuIds']);
+            DB::commit();
+        }catch (Exception $exception){
+            DB::rollBack();
+            Log::info($exception->getMessage());
+        }
+        return $row;
+    }
+
+    /**
+     * 新增角色菜单信息
+     *
+     * @param int $sysRoleId 角色编号
+     * @param array $menusArr 角色
+     * @return int
+     */
+    function insertRoleMenu(int $sysRoleId, array $menusArr): int
+    {
+        $row = 1;
+        $temp = [];
+        foreach ($menusArr as $item)
+        {
+            array_push($temp,[
+                'role_id' => $sysRoleId,
+                'menu_id' => $item
+            ]);
+        }
+        if(count($temp) > 0)
+        {
+            $row = SysRoleMenu::insertRoleMenu($temp);
+        }
+        return $row;
+    }
+
 }

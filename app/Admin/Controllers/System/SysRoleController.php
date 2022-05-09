@@ -2,12 +2,17 @@
 
 namespace App\Admin\Controllers\System;
 
+use App\Admin\Core\Constant\UserConstants;
 use App\Admin\Core\Controller\BaseController;
 use App\Admin\Core\Domain\AjaxResult;
 use App\Admin\Core\Exception\ParametersException;
 use App\Admin\Core\Security\Authentication;
+use App\Admin\Core\Security\SecurityUtils;
+use App\Admin\Core\Security\TokenService;
 use App\Admin\Request\System\Ids;
+use App\Admin\Request\System\SysRoleChangeStatusRequest;
 use App\Admin\Request\System\SysRoleListRequest;
+use App\Admin\Request\System\SysRoleRequest;
 use App\Admin\Service\System\Impl\SysRoleServiceImpl;
 use App\Admin\Service\System\ISysRoleService;
 use Illuminate\Http\JsonResponse;
@@ -26,11 +31,18 @@ class SysRoleController extends BaseController
     private ISysRoleService $sysRoleService;
 
     /**
-     * @param SysRoleServiceImpl $sysRoleService
+     * @var TokenService
      */
-    public function __construct(SysRoleServiceImpl $sysRoleService)
+    private TokenService $tokenService;
+
+    /**
+     * @param SysRoleServiceImpl $sysRoleService
+     * @param TokenService $tokenService
+     */
+    public function __construct(SysRoleServiceImpl $sysRoleService, TokenService $tokenService)
     {
         $this->sysRoleService = $sysRoleService;
+        $this->tokenService = $tokenService;
     }
 
     /**
@@ -61,18 +73,32 @@ class SysRoleController extends BaseController
     /**
      * 新增角色
      */
-    public function add(int $roleId): JsonResponse
+    public function add(SysRoleRequest $sysRoleRequest): JsonResponse
     {
         Authentication::hasPermit('system:role:add');
-        return (new AjaxResult())->success();
+        $sysRole = $sysRoleRequest->getParamsData(['deptCheckStrictly', 'deptIds', 'menuCheckStrictly', 'menuIds', 'remark', 'roleKey', 'roleName', 'roleSort', 'status']);
+        if(UserConstants::NOT_UNIQUE == $this->sysRoleService->checkAssignUnique(['roleName'=>$sysRole['roleName']]))
+        {
+            return (new AjaxResult())->error("新增角色'".$sysRole['roleName']."'失败，角色名称已存在");
+        }
+        if(UserConstants::NOT_UNIQUE == $this->sysRoleService->checkAssignUnique(['roleKey'=>$sysRole['roleKey']]))
+        {
+            return (new AjaxResult())->error("新增角色'".$sysRole['roleName']."'失败，角色权限已存在");
+        }
+        $sysRole['deptCheckStrictly'] == 'true' ? $sysRole['deptCheckStrictly'] = 1:$sysRole['deptCheckStrictly'] = 0;
+        $sysRole['menuCheckStrictly'] == 'true' ? $sysRole['menuCheckStrictly'] = 1:$sysRole['menuCheckStrictly'] = 0;
+        $sysRole['createBy'] = SecurityUtils::getUsername();
+        return $this->toAjax($this->sysRoleService->insertRole($sysRole));
     }
 
     /**
      * 修改保存角色
      */
-    public function edit()
+    public function edit(int $roleId, SysRoleRequest $sysRoleRequest)
     {
         Authentication::hasPermit('system:role:edit');
+        $sysRole = $sysRoleRequest->getParamsData(['deptCheckStrictly', 'deptIds', 'menuCheckStrictly', 'menuIds', 'remark', 'roleKey', 'roleName', 'roleSort', 'status']);
+
     }
 
     /**
@@ -85,10 +111,16 @@ class SysRoleController extends BaseController
 
     /**
      * 状态修改
+     * @throws ParametersException
      */
-    public function changeStatus()
+    public function changeStatus(SysRoleChangeStatusRequest $sysRoleChangeStatusRequest): JsonResponse
     {
         Authentication::hasPermit('system:role:edit');
+        $sysRole = $sysRoleChangeStatusRequest->getParamsData(['roleId', 'status']);
+        $this->sysRoleService->checkRoleAllowed($sysRole['roleId']);
+        $loginUser = $this->tokenService->getLoginUser();
+        $sysRole['updateBy'] = $loginUser['sysUser']['userName'];
+        return $this->toAjax($this->sysRoleService->updateRoleStatus($sysRole['roleId'],$sysRole));
     }
 
     /**
