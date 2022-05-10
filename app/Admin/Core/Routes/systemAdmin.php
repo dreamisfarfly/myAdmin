@@ -186,6 +186,12 @@ Route::prefix('/system/menu')->group(function(){
     Route::post('/', 'SysMenuController@add');
 
     /**
+     * 新增
+     */
+    Route::put('/{menuId}', 'SysMenuController@edit')
+        ->where('menuId','^[1-9]\d*$');
+
+    /**
      * 树形选择框
      */
     Route::get('/treeselect', 'SysMenuController@treeSelect');

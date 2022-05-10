@@ -12,6 +12,7 @@ use App\Admin\Service\System\ISysMenuService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * 菜单 业务层
@@ -121,6 +122,7 @@ class SysMenuServiceImpl implements ISysMenuService
     function checkMenuNameUnique(array $sysMenu, ?int $menuId = null): string
     {
         $info = SysMenu::checkMenuNameUnique($sysMenu['menuName'],$sysMenu['parentId']);
+        Log::info($info);
         if($info != null && $info['menuId'] != $menuId)
         {
             return UserConstants::NOT_UNIQUE;
@@ -132,10 +134,22 @@ class SysMenuServiceImpl implements ISysMenuService
      * 新增保存菜单信息
      *
      * @param array $sysMenu 菜单信息
-     * @return mixed 结果
+     * @return bool 结果
      */
-    function insertMenu(array $sysMenu)
+    function insertMenu(array $sysMenu): bool
     {
         return SysMenu::insertMenu($sysMenu);
+    }
+
+    /**
+     * 修改保存菜单信息
+     *
+     * @param int $menuId 菜单编号
+     * @param array $sysMenu 菜单信息
+     * @return mixed 结果
+     */
+    function updateMenu(int $menuId, array $sysMenu)
+    {
+        return SysMenu::updateMenu($menuId, $sysMenu);
     }
 }

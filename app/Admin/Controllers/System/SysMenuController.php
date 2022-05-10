@@ -5,6 +5,7 @@ namespace App\Admin\Controllers\System;
 use App\Admin\Core\Constant\UserConstants;
 use App\Admin\Core\Controller\BaseController;
 use App\Admin\Core\Domain\AjaxResult;
+use App\Admin\Core\Exception\ParametersException;
 use App\Admin\Core\Security\Authentication;
 use App\Admin\Core\Security\SecurityUtils;
 use App\Admin\Request\System\SysMenuListRequest;
@@ -88,10 +89,62 @@ class SysMenuController extends BaseController
 
     /**
      * 新增菜单
+     * @throws ParametersException
      */
-    public function add(SysMenuRequest $sysMenuRequest)
+    public function add(SysMenuRequest $sysMenuRequest): JsonResponse
     {
         Authentication::hasPermit('system:menu:add');
+        $sysMenu = self::getRequestParam($sysMenuRequest);
+        if(UserConstants::NOT_UNIQUE == $this->sysMenuService->checkMenuNameUnique($sysMenu))
+        {
+            return (new AjaxResult())->error("新增菜单'" . $sysMenu['menuName'] . "'失败，菜单名称已存在");
+        }
+        if(isset($sysMenu['isFrame']) && UserConstants::YES_FRAME == $sysMenu['isFrame'] && !preg_match('/(http|https):\/\/([\w.]+\/?)\S*/',$sysMenu['path']))
+        {
+            return (new AjaxResult())->error("新增菜单'" . $sysMenu['menuName'] . "'失败，地址必须以http(s)://开头");
+        }
+        $sysMenu['createBy'] = SecurityUtils::getUsername();
+        return $this->toAjax($this->sysMenuService->insertMenu($sysMenu));
+    }
+
+    /**
+     * 修改菜单
+     * @throws ParametersException
+     */
+    public function edit(int $menuId, SysMenuRequest $sysMenuRequest): JsonResponse
+    {
+        Authentication::hasPermit('system:menu:edit');
+        $sysMenu = self::getRequestParam($sysMenuRequest);
+        if(UserConstants::NOT_UNIQUE == $this->sysMenuService->checkMenuNameUnique($sysMenu, $menuId))
+        {
+            return (new AjaxResult())->error("修改菜单'" . $sysMenu['menuName'] . "'失败，菜单名称已存在");
+        }
+        if(isset($sysMenu['isFrame']) && UserConstants::YES_FRAME == $sysMenu['isFrame'] && !preg_match('/(http|https):\/\/([\w.]+\/?)\S*/',$sysMenu['path']))
+        {
+            return (new AjaxResult())->error("修改菜单'" . $sysMenu['menuName'] . "'失败，地址必须以http(s)://开头");
+        }
+        if($sysMenu['parentId'] == $menuId)
+        {
+            return (new AjaxResult())->error("修改菜单'" . $sysMenu['menuName'] . "'失败，上级菜单不能选择自己");
+        }
+        $sysMenu['updateBy'] = SecurityUtils::getUsername();
+        return $this->toAjax($this->sysMenuService->updateMenu($menuId,$sysMenu));
+    }
+
+    /**
+     * 删除菜单
+     */
+    public function remove()
+    {
+        Authentication::hasPermit('system:menu:remove');
+    }
+
+    /**
+     * 获取编辑参数
+     * @throws ParametersException
+     */
+    private function getRequestParam(SysMenuRequest $sysMenuRequest)
+    {
         switch ($sysMenuRequest->get('menuType'))
         {
             case 'M': //目录
@@ -104,7 +157,7 @@ class SysMenuController extends BaseController
             case 'C': //菜单
                 if(!$sysMenuRequest->exists('path') && $sysMenuRequest->get('path') != null)
                 {
-                    return (new AjaxResult())->error(' 路由地址不能为空');
+                    throw new ParametersException('路由地址不能为空');
                 }
                 $sysMenu = $sysMenuRequest->getParamsData(['parentId','menuType','icon','menuName','orderNum','isFrame','path','component','perms','query','isCache','visible','status']);
                 break;
@@ -112,34 +165,9 @@ class SysMenuController extends BaseController
                 $sysMenu = $sysMenuRequest->getParamsData(['parentId','menuType','menuName','orderNum','perms']);
                 break;
             default:
-                return (new AjaxResult())->error("新增菜单错误，菜单类型不正确！");
+                throw new ParametersException('新增菜单错误，菜单类型不正确！');
         }
-        if(UserConstants::NOT_UNIQUE == $this->sysMenuService->checkMenuNameUnique($sysMenu))
-        {
-            return (new AjaxResult())->error("新增菜单'" . $sysMenu['menuName'] . "'失败，菜单名称已存在");
-        }
-        if(UserConstants::YES_FRAME == $sysMenu['isFrame'] && !preg_match('/(http|https):\/\/([\w.]+\/?)\S*/',$sysMenu['path']))
-        {
-            return (new AjaxResult())->error("新增菜单'" . $sysMenu['menuName'] . "'失败，地址必须以http(s)://开头");
-        }
-        $sysMenu['createBy'] = SecurityUtils::getUsername();
-        return $this->toAjax($this->sysMenuService->insertMenu($sysMenu));
-    }
-
-    /**
-     * 修改菜单
-     */
-    public function edit()
-    {
-        Authentication::hasPermit('system:menu:edit');
-    }
-
-    /**
-     * 删除菜单
-     */
-    public function remove()
-    {
-        Authentication::hasPermit('system:menu:remove');
+        return $sysMenu;
     }
 
 }

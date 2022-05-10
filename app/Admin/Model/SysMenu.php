@@ -229,6 +229,7 @@ class SysMenu extends BaseModel
         return self::query()
             ->where('menu_name',$menuName)
             ->where('parent_id',$parentId)
+            ->select(self::SELECT_PARAMS)
             ->first();
     }
 
@@ -242,6 +243,20 @@ class SysMenu extends BaseModel
     {
         $sysMenu['createTime'] = date('Y-m-d H:i:s');
         return self::query()->insert(self::uncamelize($sysMenu));
+    }
+
+    /**
+     * 更改菜单
+     *
+     * @param int $menuId 菜单编号
+     * @param array $sysMenu 菜单信息
+     * @return int 结果
+     */
+    public static function updateMenu(int $menuId, array $sysMenu): int
+    {
+        return self::query()
+            ->where('menu_id', $menuId)
+            ->update(self::uncamelize($sysMenu,['menu_id']));
     }
 
 }

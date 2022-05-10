@@ -2,8 +2,6 @@
 
 namespace App\Admin\Service\System;
 
-use App\Admin\Request\System\SysMenuRequest;
-
 /**
  * 菜单 业务层
  *
@@ -76,5 +74,14 @@ interface ISysMenuService
      * @return mixed 结果
      */
     function insertMenu(array $sysMenu);
+
+    /**
+     * 修改保存菜单信息
+     *
+     * @param int $menuId 菜单编号
+     * @param array $sysMenu 菜单信息
+     * @return mixed 结果
+     */
+    function updateMenu(int $menuId, array $sysMenu);
 
 }
