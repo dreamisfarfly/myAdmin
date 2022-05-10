@@ -7,6 +7,7 @@ use App\Admin\Model\SysDept;
 use App\Admin\Service\System\ISysDeptService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * 部门管理 服务实现
@@ -80,5 +81,16 @@ class SysDeptServiceImpl implements ISysDeptService
     function buildDeptTreeSelect(array $deps): array
     {
         return TreeSelectUtil::collect($deps, 0,'deptId','deptName');
+    }
+
+    /**
+     * 根据部门ID查询信息
+     *
+     * @param int $depId 部门ID
+     * @return Builder|Model|object|null 部门信息
+     */
+    function selectDeptById(int $depId)
+    {
+        return SysDept::selectDeptById($depId);
     }
 }

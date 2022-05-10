@@ -259,4 +259,26 @@ class SysMenu extends BaseModel
             ->update(self::uncamelize($sysMenu,['menu_id']));
     }
 
+    /**
+     * 是否存在菜单子节点
+     *
+     * @param int $menuId 菜单ID
+     * @return bool 结果
+     */
+    public static function hasChildByMenuId(int $menuId): bool
+    {
+        return self::query()->where('parent_id', $menuId)->exists();
+    }
+
+    /**
+     * 删除菜单管理信息
+     *
+     * @param int $menuId 菜单ID
+     * @return mixed 结果
+     */
+    public static function deleteMenuById(int $menuId)
+    {
+        return self::query()->where('menu_id', $menuId)->delete();
+    }
+
 }

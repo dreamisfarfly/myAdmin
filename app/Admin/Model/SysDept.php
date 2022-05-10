@@ -81,16 +81,37 @@ class SysDept extends BaseModel
 
     /**
      * 查询部门管理数据
+     * @param array $queryParams 查询参数
      * @return Builder[]|Collection
      */
-    public static function selectDeptList()
+    public static function selectDeptList(array $queryParams)
     {
         return self::query()
+            ->when(isset($queryParams['deptName']),function($query)use($queryParams){
+                $query->where('dept_name', 'like', $queryParams['deptName'].'%');
+            })
+            ->when(isset($queryParams['status']),function($query)use($queryParams){
+                $query->where('status', $queryParams['status']);
+            })
             ->where('del_flag', 0)
             ->select(self::SELECT_PARAMS)
             ->orderBy('parent_id')
             ->orderBy('order_num')
             ->get();
+    }
+
+    /**
+     * 根据部门ID查询信息
+     *
+     * @param int $deptId 部门ID
+     * @return Builder|Model|object|null 部门信息
+     */
+    public static function selectDeptById(int $deptId)
+    {
+        return self::query()
+            ->where('dept_id', $deptId)
+            ->select(self::SELECT_PARAMS)
+            ->first();
     }
 
 }

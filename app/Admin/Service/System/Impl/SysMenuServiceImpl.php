@@ -8,6 +8,7 @@ use App\Admin\Core\Utils\MenuUtil;
 use App\Admin\Core\Utils\TreeSelectUtil;
 use App\Admin\Model\SysMenu;
 use App\Admin\Model\SysRole;
+use App\Admin\Model\SysRoleMenu;
 use App\Admin\Service\System\ISysMenuService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -146,10 +147,43 @@ class SysMenuServiceImpl implements ISysMenuService
      *
      * @param int $menuId 菜单编号
      * @param array $sysMenu 菜单信息
-     * @return mixed 结果
+     * @return int 结果
      */
-    function updateMenu(int $menuId, array $sysMenu)
+    function updateMenu(int $menuId, array $sysMenu): int
     {
         return SysMenu::updateMenu($menuId, $sysMenu);
+    }
+
+    /**
+     * 是否存在菜单子节点
+     *
+     * @param int $menuId 菜单ID
+     * @return bool 结果 true 存在 false 不存在
+     */
+    function hasChildByMenuId(int $menuId): bool
+    {
+        return SysMenu::hasChildByMenuId($menuId);
+    }
+
+    /**
+     * 查询菜单是否存在角色
+     *
+     * @param int $menuId 菜单ID
+     * @return bool 结果 true 存在 false 不存在
+     */
+    function checkMenuExistRole(int $menuId): bool
+    {
+        return SysRoleMenu::checkMenuExistRole($menuId);
+    }
+
+    /**
+     * 删除菜单管理信息
+     *
+     * @param int $menuId 菜单ID
+     * @return mixed 结果
+     */
+    function deleteMenuById(int $menuId)
+    {
+        return SysMenu::deleteMenuById($menuId);
     }
 }

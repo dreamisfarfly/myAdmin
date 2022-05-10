@@ -134,9 +134,18 @@ class SysMenuController extends BaseController
     /**
      * 删除菜单
      */
-    public function remove()
+    public function remove(int $menuId): JsonResponse
     {
         Authentication::hasPermit('system:menu:remove');
+        if($this->sysMenuService->hasChildByMenuId($menuId))
+        {
+            return (new AjaxResult())->error('存在子菜单,不允许删除');
+        }
+        if($this->sysMenuService->checkMenuExistRole($menuId))
+        {
+            return (new AjaxResult())->error('菜单已分配,不允许删除');
+        }
+        return $this->toAjax($this->sysMenuService->deleteMenuById($menuId));
     }
 
     /**

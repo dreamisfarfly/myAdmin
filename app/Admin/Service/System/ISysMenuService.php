@@ -84,4 +84,28 @@ interface ISysMenuService
      */
     function updateMenu(int $menuId, array $sysMenu);
 
+    /**
+     * 是否存在菜单子节点
+     *
+     * @param int $menuId 菜单ID
+     * @return mixed 结果 true 存在 false 不存在
+     */
+    function hasChildByMenuId(int $menuId);
+
+    /**
+     * 查询菜单是否存在角色
+     *
+     * @param int $menuId 菜单ID
+     * @return mixed 结果 true 存在 false 不存在
+     */
+    function checkMenuExistRole(int $menuId);
+
+    /**
+     * 删除菜单管理信息
+     *
+     * @param int $menuId 菜单ID
+     * @return mixed 结果
+     */
+    function deleteMenuById(int $menuId);
+
 }

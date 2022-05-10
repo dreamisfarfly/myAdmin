@@ -6,10 +6,12 @@ use App\Admin\Core\Controller\BaseController;
 use App\Admin\Core\Domain\AjaxResult;
 use App\Admin\Core\Security\Authentication;
 use App\Admin\Request\System\SysDept;
+use App\Admin\Request\System\SysDeptListRequest;
 use App\Admin\Request\System\SysDeptRequest;
 use App\Admin\Service\System\Impl\SysDeptServiceImpl;
 use App\Admin\Service\System\ISysDeptService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 /**
  * 部门信息
@@ -35,33 +37,41 @@ class SysDeptController extends BaseController
     /**
      * 获取部门列表
      */
-    public function list(SysDeptRequest $sysDeptRequest): JsonResponse
+    public function list(SysDeptListRequest $sysDeptListRequest): JsonResponse
     {
         Authentication::hasPermit('system:dept:list');
         return (new AjaxResult())
             ->success(
-                $this->sysDeptService->selectDeptList($sysDeptRequest->getParamsData([]))
+                $this->sysDeptService->selectDeptList($sysDeptListRequest->getParamsData(['deptName','status']))
             );
     }
 
     /**
      * 查询部门列表（排除节点）
      */
-    public function excludeChild(int $deptId = 0)
+    public function excludeChild(int $deptId = 0): JsonResponse
     {
         Authentication::hasPermit('system:dept:list');
-        $deps = $this->sysDeptService->selectDeptList([]);
-//        foreach ($deps as $item){
-//            if($item['deptId'] == $deptId || )
-//        }
+        $deps = $this->sysDeptService->selectDeptList();
+        $data = $deps->toArray();
+        foreach ($data as $key => $item)
+        {
+
+            if($item['deptId'] == $deptId || in_array($deptId,explode(',', $item['ancestors'])))
+            {
+                unset($data[$key]);
+            }
+        }
+        return (new AjaxResult())->success($data);
     }
 
     /**
      * 根据部门编号获取详细信息
      */
-    public function getInfo()
+    public function getInfo(int $deptId): JsonResponse
     {
         Authentication::hasPermit('system:dept:query');
+        return (new AjaxResult())->success($this->sysDeptService->selectDeptById($deptId));
     }
 
     /**

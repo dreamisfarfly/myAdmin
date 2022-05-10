@@ -186,9 +186,15 @@ Route::prefix('/system/menu')->group(function(){
     Route::post('/', 'SysMenuController@add');
 
     /**
-     * 新增
+     * 更改
      */
     Route::put('/{menuId}', 'SysMenuController@edit')
+        ->where('menuId','^[1-9]\d*$');
+
+    /**
+     * 删除
+     */
+    Route::delete('/{menuId}', 'SysMenuController@remove')
         ->where('menuId','^[1-9]\d*$');
 
     /**
@@ -219,6 +225,18 @@ Route::prefix('/system/dept')->group(function(){
      * 列表
      */
     Route::get('/list', 'SysDeptController@list');
+
+    /**
+     * 详情
+     */
+    Route::get('/{deptId}', 'SysDeptController@getInfo')
+        ->where('deptId','^[1-9]\d*$');
+
+    /**
+     * 详情
+     */
+    Route::get('/list/exclude/{deptId?}', 'SysDeptController@excludeChild')
+        ->where('deptId','^[1-9]\d*$');
 
     /**
      * 获取部门下拉树列表

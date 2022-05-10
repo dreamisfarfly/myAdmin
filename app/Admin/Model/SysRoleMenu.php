@@ -53,4 +53,15 @@ class SysRoleMenu extends BaseModel
         return self::query()->insert($sysRoleMenu);
     }
 
+    /**
+     * 查询菜单是否使用
+     *
+     * @param int $menuId 菜单ID
+     * @return bool 结果
+     */
+    static function checkMenuExistRole(int $menuId): bool
+    {
+        return self::query()->where('menu_id', $menuId)->exists();
+    }
+
 }

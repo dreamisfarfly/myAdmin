@@ -58,4 +58,12 @@ interface ISysDeptService
      */
     function buildDeptTreeSelect(array $deps);
 
+    /**
+     * 根据部门ID查询信息
+     *
+     * @param int $depId 部门ID
+     * @return mixed 部门信息
+     */
+    function selectDeptById(int $depId);
+
 }
