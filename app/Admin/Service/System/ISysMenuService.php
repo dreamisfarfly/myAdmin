@@ -52,4 +52,29 @@ interface ISysMenuService
      */
     function selectMenuListByRoleId(int $roleId);
 
+    /**
+     * 根据菜单ID查询信息
+     *
+     * @param int $menuId 菜单ID
+     * @return mixed 菜单信息
+     */
+    function selectMenuById(int $menuId);
+
+    /**
+     * 校验菜单名称是否唯一
+     *
+     * @param array $sysMenu 菜单信息
+     * @param int|null $menuId
+     * @return mixed 结果
+     */
+    function checkMenuNameUnique(array $sysMenu, ?int $menuId = null);
+
+    /**
+     * 新增保存菜单信息
+     *
+     * @param array $sysMenu 菜单信息
+     * @return mixed 结果
+     */
+    function insertMenu(array $sysMenu);
+
 }

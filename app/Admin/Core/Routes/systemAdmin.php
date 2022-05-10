@@ -181,6 +181,11 @@ Route::prefix('/system/menu')->group(function(){
     Route::get('/list', 'SysMenuController@list');
 
     /**
+     * 新增
+     */
+    Route::post('/', 'SysMenuController@add');
+
+    /**
      * 树形选择框
      */
     Route::get('/treeselect', 'SysMenuController@treeSelect');
@@ -191,6 +196,11 @@ Route::prefix('/system/menu')->group(function(){
     Route::get('/roleMenuTreeselect/{roleId}', 'SysMenuController@roleMenuTreeSelect')
         ->where('roleId','^[1-9]\d*$');
 
+    /**
+     * 详情
+     */
+    Route::get('/{menuId}','SysMenuController@getInfo')
+        ->where('menuId','^[1-9]\d*$');
 
 });
 

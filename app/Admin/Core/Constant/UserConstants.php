@@ -15,4 +15,7 @@ interface UserConstants
 
     const  NOT_UNIQUE = '1';
 
+    /** 是否菜单外链（是） */
+    const YES_FRAME = '0';
+
 }

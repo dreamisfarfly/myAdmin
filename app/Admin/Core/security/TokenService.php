@@ -77,7 +77,12 @@ class TokenService
         {
             $claims = self::parseToken($token);
             // 解析对应的权限以及用户信息
-            $uuid = json_decode($claims, true)[Constants::LOGIN_USER_KEY];
+            $tokenArr = json_decode($claims, true);
+            if(!isset($tokenArr[Constants::LOGIN_USER_KEY]))
+            {
+                return null;
+            }
+            $uuid = $tokenArr[Constants::LOGIN_USER_KEY];
             $userKey = self::getTokenKey($uuid);
             $loginUser = Redis::get($userKey);
             return json_decode($loginUser, true);
@@ -111,6 +116,18 @@ class TokenService
     {
         $expireTime = $loginUser['expireTime'];
         if($expireTime - time() <= self::MILLIS_MINUTE_TEN)
+        {
+            self::refreshToken($loginUser);
+        }
+    }
+
+    /**
+     * 设置用户身份信息
+     * @param array $loginUser
+     */
+    public function setLoginUser(array $loginUser)
+    {
+        if($loginUser != null && $loginUser['token'] != null)
         {
             self::refreshToken($loginUser);
         }

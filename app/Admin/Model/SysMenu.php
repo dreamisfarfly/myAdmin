@@ -5,6 +5,7 @@ namespace App\Admin\Model;
 use App\Admin\Core\Model\BaseModel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * 菜单
@@ -80,6 +81,10 @@ class SysMenu extends BaseModel
             ->get();
     }
 
+    /**
+     * @param int $userId
+     * @return Builder[]|Collection
+     */
     public static function selectMenuTreeByUserId(int $userId)
     {
         return self::query()
@@ -142,6 +147,12 @@ class SysMenu extends BaseModel
             ->when(isset($queryParams['userId']),function($query) use($queryParams){
                 $query->where('ur.user_id', $queryParams['userId']);
             })
+            ->when(isset($queryParams['menuName']),function($query) use($queryParams){
+                $query->where('m.menu_name', 'like', $queryParams['menuName'].'%');
+            })
+            ->when(isset($queryParams['status']),function($query) use($queryParams){
+                $query->where('m.status', $queryParams['status']);
+            })
             ->select([
                 'm.menu_id as menuId',
                 'm.parent_id as parentId',
@@ -190,6 +201,47 @@ class SysMenu extends BaseModel
             ->orderBy('m.order_num')
             ->select(['m.menu_id as menuId'])
             ->get();
+    }
+
+    /**
+     * 根据菜单ID查询信息
+     *
+     * @param int $menuId 菜单ID
+     * @return Builder|Model|object|null 菜单信息
+     */
+    public static function selectMenuById(int $menuId)
+    {
+        return self::query()
+            ->where('menu_id', $menuId)
+            ->select(self::SELECT_PARAMS)
+            ->first();
+    }
+
+    /**
+     * 校验菜单名称是否唯一
+     *
+     * @param string $menuName 菜单名称
+     * @param int $parentId 父菜单ID
+     * @return Builder|Model|object|null 结果
+     */
+    public static function checkMenuNameUnique(string $menuName, int $parentId)
+    {
+        return self::query()
+            ->where('menu_name',$menuName)
+            ->where('parent_id',$parentId)
+            ->first();
+    }
+
+    /**
+     * 新增菜单信息
+     *
+     * @param array $sysMenu 菜单信息
+     * @return bool 结果
+     */
+    public static function insertMenu(array $sysMenu): bool
+    {
+        $sysMenu['createTime'] = date('Y-m-d H:i:s');
+        return self::query()->insert(self::uncamelize($sysMenu));
     }
 
 }
