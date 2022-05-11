@@ -214,6 +214,20 @@ class SysUser extends BaseModel
     }
 
     /**
+     * 查询部门是否存在用户
+     *
+     * @param int $deptId
+     * @return int
+     */
+    public static function checkDeptExistUser(int $deptId): int
+    {
+        return self::query()
+            ->where('dept_id', $deptId)
+            ->where('del_flag', 0)
+            ->count();
+    }
+
+    /**
      * 查询链接
      * @return Builder
      */

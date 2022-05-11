@@ -51,20 +51,6 @@ class SysDept extends BaseModel
     }
 
     /**
-     * 查询部门是否存在用户
-     *
-     * @param int $deptId
-     * @return int
-     */
-    public static function checkDeptExistUser(int $deptId): int
-    {
-        return self::query()
-            ->where('dept_id', $deptId)
-            ->where('del_flag', 0)
-            ->count();
-    }
-
-    /**
      * 删除部门管理信息
      *
      * @param int $deptId 部门ID
@@ -112,6 +98,93 @@ class SysDept extends BaseModel
             ->where('dept_id', $deptId)
             ->select(self::SELECT_PARAMS)
             ->first();
+    }
+
+    /**
+     * 校验部门名称是否唯一
+     *
+     * @param array $sysDept 部门名称
+     * @return Builder|Model|object|null 结果
+     */
+    public static function checkDeptUnique(array $sysDept)
+    {
+        return self::query()
+            ->when(isset($sysDept['deptName']),function($query)use($sysDept){
+                $query->where('dept_name', $sysDept['deptName']);
+            })
+            ->when(isset($sysDept['parentId']),function($query)use($sysDept){
+                $query->where('parent_id', $sysDept['parentId']);
+            })
+            ->select(self::SELECT_PARAMS)
+            ->first();
+    }
+
+    /**
+     * 新增部门信息
+     *
+     * @param array $sysDept 部门信息
+     * @return bool 结果
+     */
+    public static function insertDept(array $sysDept): bool
+    {
+        $sysDept['createTime'] = date('Y-m-d H:i:s');
+        return self::query()->insert(self::uncamelize($sysDept));
+    }
+
+    /**
+     * 根据ID查询所有子部门（正常状态）
+     *
+     * @param int $deptId 部门ID
+     * @return Builder[]|Collection 子部门数
+     */
+    public static function selectNormalChildrenDeptById(int $deptId)
+    {
+        return self::query()
+            ->where('status', 0)
+            ->where('del_flag', 0)
+            ->whereRaw('find_in_set(?,ancestors)', [$deptId])
+            ->select(self::SELECT_PARAMS)
+            ->get();
+    }
+
+    /**
+     * 根据ID查询所有子部门
+     *
+     * @param int $deptId 部门ID
+     * @return Builder[]|Collection 部门列表
+     */
+    public static function selectChildrenDeptById(int $deptId)
+    {
+        return self::query()
+            ->whereRaw('find_in_set(?,ancestors)', [$deptId])
+            ->select(self::SELECT_PARAMS)
+            ->get();
+    }
+
+    /**
+     * 更新部门
+     *
+     * @param int $deptId
+     * @param array $sysDept
+     * @return int
+     */
+    public static function updateDept(int $deptId, array $sysDept): int
+    {
+        $sysDept['updateTime'] = date('Y-m-d H:i:s');
+        return self::query()->where('dept_id',$deptId)->update(self::uncamelize($sysDept));
+    }
+
+    /**
+     * @param array $ancestors
+     * @param array $sysDept
+     * @return int
+     */
+    public static function updateDeptStatus(array $ancestors, array $sysDept): int
+    {
+        $sysDept['updateTime'] = date('Y-m-d H:i:s');
+        return self::query()
+            ->whereIn('dept_id', $ancestors)
+            ->update(self::uncamelize($sysDept));
     }
 
 }

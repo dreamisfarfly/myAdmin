@@ -7,6 +7,7 @@ use App\Admin\Core\Controller\BaseController;
 use App\Admin\Core\Domain\AjaxResult;
 use App\Admin\Core\Exception\ParametersException;
 use App\Admin\Core\Security\Authentication;
+use App\Admin\Core\Security\SecurityUtils;
 use App\Admin\Request\System\Ids;
 use App\Admin\Request\System\SysDictType;
 use App\Admin\Service\System\Impl\SysDictTypeServiceImpl;
@@ -59,7 +60,7 @@ class SysDictTypeController extends BaseController
     {
         Authentication::hasPermit('system:dict:add');
         $sysDictTypeData = $sysDictType->getParamsData(['dictName','dictType','status','remark']);
-        $sysDictTypeData['createBy'] = 'admin';
+        $sysDictTypeData['createBy'] = SecurityUtils::getUsername();
         $sysDictTypeData['createTime'] = date('Y-m-d H:i:s');
         return $this->toAjax($this->sysDictTypeService->insertDictType($sysDictTypeData));
     }
@@ -76,8 +77,7 @@ class SysDictTypeController extends BaseController
             throw new ParametersException('新增字典失败，字典类型已存在');
         }
         $sysDictTypeData = $sysDictType->getParamsData(['dictName','dictType','status','remark']);
-        $sysDictTypeData['updateBy'] = 'admin';
-        $sysDictTypeData['updateTime'] = date('Y-m-d H:i:s');
+        $sysDictTypeData['updateBy'] = SecurityUtils::getUsername();
         return $this->toAjax($this->sysDictTypeService->updateDictType($id, $sysDictTypeData));
     }
 

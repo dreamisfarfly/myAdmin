@@ -144,7 +144,6 @@ Route::prefix('/system/dict/type')->group(function(){
      */
     Route::get('/optionselect', 'SysDictTypeController@optionSelect');
 
-
 });
 
 /**
@@ -156,6 +155,23 @@ Route::prefix('/system/dict/data')->group(function(){
      * 列表
      */
     Route::get('/list','SysDictDataController@list');
+
+    /**
+     * 新增
+     */
+    Route::post('/','SysDictDataController@add');
+
+    /**
+     * 更新
+     */
+    Route::put('/{dictCode}', 'SysDictDataController@edit')
+        ->where('dictCode','^[1-9]\d*$');
+
+    /**
+     * 删除
+     */
+    Route::delete('/{ids}','SysDictDataController@remove')
+        ->where('ids','^\d+(,\d+)*$');
 
     /**
      * 详情
@@ -222,9 +238,26 @@ Route::prefix('/system/menu')->group(function(){
 Route::prefix('/system/dept')->group(function(){
 
     /**
+     * 添加
+     */
+    Route::post('/', 'SysDeptController@add');
+
+    /**
      * 列表
      */
     Route::get('/list', 'SysDeptController@list');
+
+    /**
+     * 更新
+     */
+    Route::put('/{deptId}', 'SysDeptController@edit')
+        ->where('deptId','^[1-9]\d*$');
+
+    /**
+     * 删除
+     */
+    Route::delete('/{deptId}', 'SysDeptController@remove')
+        ->where('deptId','^[1-9]\d*$');;
 
     /**
      * 详情
@@ -254,6 +287,30 @@ Route::prefix('/system/post')->group(function(){
      * 列表
      */
     Route::get('/list', 'SysPostController@list');
+
+    /**
+     * 详情
+     */
+    Route::get('/{postId}', 'SysPostController@getInfo')
+        ->where('postId','^[1-9]\d*$');;
+
+    /**
+     * 新增
+     */
+    Route::post('/', 'SysPostController@add');
+
+    /**
+     * 更新
+     */
+    Route::put('/{postId}', 'SysPostController@edit')
+        ->where('postId','^[1-9]\d*$');
+
+    /**
+     * 删除
+     */
+    Route::delete('/{ids}', 'SysPostController@remove')
+        ->where('ids','^\d+(,\d+)*$');;
+
 
 });
 

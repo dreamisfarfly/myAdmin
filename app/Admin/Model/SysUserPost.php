@@ -47,4 +47,15 @@ class SysUserPost extends BaseModel
         return self::query()->whereIn('user_id', $userIds)->delete();
     }
 
+    /**
+     * 通过岗位ID查询岗位使用数量
+     *
+     * @param int $postId 岗位ID
+     * @return int 结果
+     */
+    static function countUserPostById(int $postId): int
+    {
+        return self::query()->where('post_id', $postId)->count();
+    }
+
 }

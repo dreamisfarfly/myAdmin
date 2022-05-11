@@ -89,7 +89,7 @@ class SysDictTypeServiceImpl implements ISysDictTypeService
         try {
             DB::beginTransaction();
             $oldDict = SysDictType::selectDictTypeById($dictId);
-            SysDictData::updateDictDataType($oldDict->dict_type, $data['dictType']);
+            SysDictData::updateDictDataType($oldDict['dictType'], ['dictType'=>$data['dictType'],'updateBy'=>$data['updateBy']]);
             $row = SysDictType::updateDictType($dictId, $data);
             if( $row > 0)
             {
@@ -115,9 +115,9 @@ class SysDictTypeServiceImpl implements ISysDictTypeService
         foreach ($ids as $id)
         {
             $dictType = self::selectDictTypeById($id);
-            if(SysDictData::countDictDataByType($dictType->dict_type) > 0)
+            if(SysDictData::countDictDataByType($dictType['dictType']) > 0)
             {
-                throw new ParametersException(sprintf('%s已分配,不能删除', $dictType->dict_type));
+                throw new ParametersException(sprintf('%s已分配,不能删除', $dictType['dictType']));
             }
         }
         $count = SysDictType::deleteDictTypeByIds($ids);

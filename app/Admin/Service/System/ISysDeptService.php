@@ -35,14 +35,6 @@ interface ISysDeptService
     function deleteDeptById(int $deptId);
 
     /**
-     * 校验部门名称是否唯一
-     *
-     * @param array $dept 部门信息
-     * @return mixed 结果
-     */
-    function checkDeptNameUnique(array $dept);
-
-    /**
      * 查询部门管理数据
      *
      * @param array $queryParams 部门信息
@@ -65,5 +57,39 @@ interface ISysDeptService
      * @return mixed 部门信息
      */
     function selectDeptById(int $depId);
+
+    /**
+     * 校验部门名称是否唯一
+     *
+     * @param array $sysDept 部门信息
+     * @param int|null $deptId 部门编号
+     * @return mixed
+     */
+    function checkDeptUnique(array $sysDept, ?int $deptId = null);
+
+    /**
+     * 新增保存部门信息
+     *
+     * @param array $sysDept 部门信息
+     * @return mixed 结果
+     */
+    function insertDept(array $sysDept);
+
+    /**
+     * 根据ID查询所有子部门（正常状态）
+     *
+     * @param int $deptId 部门ID
+     * @return mixed 子部门数
+     */
+    function selectNormalChildrenDeptById(int $deptId);
+
+    /**
+     * 修改保存部门信息
+     *
+     * @param int $deptId 部门编号
+     * @param array $sysDept 部门信息
+     * @return mixed 结果
+     */
+    function updateDept(int $deptId, array $sysDept);
 
 }

@@ -2,8 +2,14 @@
 
 namespace App\Admin\Controllers\System;
 
+use App\Admin\Core\Constant\UserConstants;
 use App\Admin\Core\Controller\BaseController;
+use App\Admin\Core\Domain\AjaxResult;
+use App\Admin\Core\Exception\ParametersException;
 use App\Admin\Core\Security\Authentication;
+use App\Admin\Core\Security\SecurityUtils;
+use App\Admin\Request\System\SysPostListRequest;
+use App\Admin\Request\System\SysPostRequest;
 use App\Admin\Service\System\Impl\SysPostServiceImpl;
 use App\Admin\Service\System\ISysPostService;
 use Illuminate\Http\JsonResponse;
@@ -32,14 +38,85 @@ class SysPostController extends BaseController
     /**
      * 获取岗位列表
      *
+     * @param SysPostListRequest $sysPostListRequest
      * @return JsonResponse
      */
-    public function list(): JsonResponse
+    public function list(SysPostListRequest $sysPostListRequest): JsonResponse
     {
-        Authentication::hasPermit('system:role:query');
+        Authentication::hasPermit('system:post:query');
         return $this->getDataTable(
-            $this->sysPostService->selectPostList([])
+            $this->sysPostService->selectPostList($sysPostListRequest->getParamsData(['postCode','postName','status']))
         );
+    }
+
+    /**
+     * 根据岗位编号获取详细信息
+     *
+     * @param int $postId
+     * @return JsonResponse
+     */
+    public function getInfo(int $postId): JsonResponse
+    {
+        Authentication::hasPermit('system:post:query');
+        return (new AjaxResult())->success($this->sysPostService->selectPostById($postId));
+    }
+
+    /**
+     * 新增岗位
+     *
+     * @param SysPostRequest $sysPostRequest
+     * @return JsonResponse
+     */
+    public function add(SysPostRequest $sysPostRequest): JsonResponse
+    {
+        Authentication::hasPermit('system:post:add');
+        $sysPost = $sysPostRequest->getParamsData(['postName','postCode','postSort','remark','status']);
+        if(UserConstants::NOT_UNIQUE == $this->sysPostService->checkPostUnique(['postName'=>$sysPost['postName']]))
+        {
+            return (new AjaxResult())->error("新增岗位'" . $sysPost['postName'] . "'失败，岗位名称已存在");
+        }
+        if(UserConstants::NOT_UNIQUE == $this->sysPostService->checkPostUnique(['postCode'=>$sysPost['postCode']]))
+        {
+            return (new AjaxResult())->error("新增岗位'". $sysPost['postName'] . "'失败，岗位编码已存在");
+        }
+        $sysPost['createBy'] = SecurityUtils::getUsername();
+        return $this->toAjax($this->sysPostService->insertPost($sysPost));
+    }
+
+    /**
+     * 修改岗位
+     * @param int $postId
+     * @param SysPostRequest $sysPostRequest
+     * @return JsonResponse
+     */
+    public function edit(int $postId, SysPostRequest $sysPostRequest): JsonResponse
+    {
+        Authentication::hasPermit('system:post:edit');
+        $sysPost = $sysPostRequest->getParamsData(['postName','postCode','postSort','remark','status']);
+        if(UserConstants::NOT_UNIQUE == $this->sysPostService->checkPostUnique(['postName'=>$sysPost['postName']],$postId))
+        {
+            return (new AjaxResult())->error("新增岗位'" . $sysPost['postName'] . "'失败，岗位名称已存在");
+        }
+        if(UserConstants::NOT_UNIQUE == $this->sysPostService->checkPostUnique(['postCode'=>$sysPost['postCode']],$postId))
+        {
+            return (new AjaxResult())->error("新增岗位'". $sysPost['postName'] . "'失败，岗位编码已存在");
+        }
+        $sysPost['updateBy'] = SecurityUtils::getUsername();
+        return $this->toAjax($this->sysPostService->updatePost($postId, $sysPost));
+    }
+
+    /**
+     * 删除岗位
+     *
+     * @param string $ids
+     * @return JsonResponse
+     * @throws ParametersException
+     */
+    public function remove(string $ids): JsonResponse
+    {
+        Authentication::hasPermit('system:post:remove');
+        $ids = explode(',', $ids);
+        return $this->toAjax($this->sysPostService->deletePostByIds($ids));
     }
 
 }

@@ -54,7 +54,7 @@ class SysDictType extends BaseModel
      */
     public static function selectDictTypeById(int $dictId)
     {
-        return self::query()->where('dict_id', $dictId)->first();
+        return self::query()->where('dict_id', $dictId)->select(self::SELECT_PARAMS)->first();
     }
 
     /**
@@ -65,7 +65,7 @@ class SysDictType extends BaseModel
      */
     public static function checkDictTypeUnique(string $dictType)
     {
-        return self::query()->where('dict_type', $dictType)->first();
+        return self::query()->where('dict_type', $dictType)->select(self::SELECT_PARAMS)->first();
     }
 
     /**
@@ -87,9 +87,10 @@ class SysDictType extends BaseModel
      */
     public static function updateDictType(int $dictId, array $data): int
     {
+        $data['updateTime'] = date('Y-m-d H:i:s');
         return self::query()
             ->where('dict_id', $dictId)
-            ->update(self::parametersFilter($data));
+            ->update(self::uncamelize($data));
     }
 
     /**

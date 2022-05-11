@@ -34,19 +34,31 @@ class SysDictData extends BaseModel
         'create_by as createBy',
         'create_time as createTime',
         'update_by as updateBy',
-        'update_time as updateTime'
+        'update_time as updateTime',
+        'remark'
     ];
 
     /**
      * 根据条件分页查询字典数据
      *
+     * @param array $queryParam
      * @return LengthAwarePaginator
      */
-    public static function selectDictDataList(): LengthAwarePaginator
+    public static function selectDictDataList(array $queryParam): LengthAwarePaginator
     {
         return self::customPagination(
             self::query()
+                ->when(isset($queryParam['status']),function($query)use($queryParam){
+                    $query->where('status', $queryParam['status']);
+                })
+                ->when(isset($queryParam['dictType']),function($query)use($queryParam){
+                    $query->where('dict_type', $queryParam['dictType']);
+                })
+                ->when(isset($queryParam['dictLabel']),function($query)use($queryParam){
+                    $query->where('dict_label', $queryParam['dictLabel']);
+                })
                 ->select(self::SELECT_PARAMS)
+                ->orderBy('dict_sort')
         );
     }
 
@@ -58,23 +70,22 @@ class SysDictData extends BaseModel
      */
     public static function selectDictDataById(int $dictCode)
     {
-        return self::query()->where('dict_code', $dictCode)->first();
+        return self::query()->where('dict_code', $dictCode)->select(self::SELECT_PARAMS)->first();
     }
 
     /**
      * 同步修改字典类型
      *
      * @param string $oldDictType 旧字典类型
-     * @param string $newDictType 新旧字典类型
+     * @param array $newDict
      * @return int 结果
      */
-    public static function updateDictDataType(string $oldDictType, string $newDictType): int
+    public static function updateDictDataType(string $oldDictType, array $newDict): int
     {
+        $newDict['updateTime'] = date('Y-m-d H:i:s');
         return self::query()
             ->where('dict_type', $oldDictType)
-            ->update([
-                'dict_type' => $newDictType
-            ]);
+            ->update(self::uncamelize($newDict));
     }
 
     /**
@@ -105,6 +116,44 @@ class SysDictData extends BaseModel
             ->select(self::SELECT_PARAMS)
             ->orderBy('dict_sort')
             ->get();
+    }
+
+    /**
+     * 新增字典数据信息
+     *
+     * @param array $sysDictData 字典数据信息
+     * @return bool 结果
+     */
+    public static function insertDictData(array $sysDictData): bool
+    {
+        $sysDictData['createTime'] = date('Y-m-d H:i:s');
+        return self::query()->insert(self::uncamelize($sysDictData));
+    }
+
+    /**
+     * 修改保存字典数据信息
+     *
+     * @param int $dictCode 字典数据编号
+     * @param array $dictData 字典数据信息
+     * @return int 结果
+     */
+    public static function updateDictData(int $dictCode, array $dictData): int
+    {
+        $dictData['updateTime'] = date('Y-m-d H:i:s');
+        return self::query()
+            ->where('dict_code', $dictCode)
+            ->update(self::uncamelize($dictData));
+    }
+
+    /**
+     * 批量删除字典数据信息
+     *
+     * @param array $dictCodes 需要删除的字典数据ID
+     * @return mixed 结果
+     */
+    public static function deleteDictDataByIds(array $dictCodes)
+    {
+        return self::query()->whereIn('dict_code', $dictCodes)->delete();
     }
 
 }

@@ -18,4 +18,10 @@ interface UserConstants
     /** 是否菜单外链（是） */
     const YES_FRAME = '0';
 
+    /** 部门正常状态 */
+    const DEPT_NORMAL = '0';
+
+    /** 部门停用状态 */
+    const DEPT_DISABLE = '1';
+
 }
