@@ -146,8 +146,7 @@ class SysUserController extends BaseController
         {
             return (new AjaxResult())->error('新增用户'.$sysUser['userName'].'失败，邮箱账号已存在');
         }
-        $loginUser = $this->tokenService->getLoginUser();
-        $sysUser['createBy'] = $loginUser['sysUser']['userName'];
+        $sysUser['createBy'] = SecurityUtils::getUsername();
         $sysUser['password'] = SysUser::getPassword($sysUser['password']);
         return $this->toAjax($this->sysUserService->insertUser($sysUser));
     }
@@ -173,8 +172,7 @@ class SysUserController extends BaseController
         {
             return (new AjaxResult())->error('修改用户'.$userName.'失败，邮箱账号已存在');
         }
-        $loginUser = $this->tokenService->getLoginUser();
-        $sysUser['updateBy'] = $loginUser['sysUser']['userName'];
+        $sysUser['updateBy'] = SecurityUtils::getUsername();
         return $this->toAjax($this->sysUserService->updateUser($userId, $sysUser));
     }
 
@@ -196,10 +194,9 @@ class SysUserController extends BaseController
     public function resetPwd(ResetSysUserPwdRequest $resetSysUserPwdRequest): JsonResponse
     {
         Authentication::hasPermit('system:user:resetPwd');
-        $loginUser = $this->tokenService->getLoginUser();
         $sysUser = $resetSysUserPwdRequest->getParamsData(['userId', 'password']);
         $this->sysUserService->checkUserAllowed($sysUser['userId']);
-        $sysUser['updateBy'] = $loginUser['sysUser']['userName'];
+        $sysUser['updateBy'] = SecurityUtils::getUsername();
         $sysUser['password'] = SysUser::getPassword($sysUser['password']);
         return $this->toAjax($this->sysUserService->resetPwd($sysUser['userId'],$sysUser));
     }
@@ -211,10 +208,9 @@ class SysUserController extends BaseController
     public function changeStatus(SysUserChangeStatusRequest $sysUserChangeStatusRequest): JsonResponse
     {
         Authentication::hasPermit('system:user:edit');
-        $loginUser = $this->tokenService->getLoginUser();
         $sysUser = $sysUserChangeStatusRequest->getParamsData(['userId', 'status']);
         $this->sysUserService->checkUserAllowed($sysUser['userId']);
-        $sysUser['updateBy'] = $loginUser['sysUser']['userName'];
+        $sysUser['updateBy'] = SecurityUtils::getUsername();
         return $this->toAjax($this->sysUserService->updateUserStatus($sysUser['userId'], $sysUser));
     }
 

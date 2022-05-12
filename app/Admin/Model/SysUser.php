@@ -113,7 +113,9 @@ class SysUser extends BaseModel
      */
     public static function selectUserByUsername(string $username)
     {
-        return self::query()->where('user_name', $username)->select(self::SELECT_PARAMS)->first();
+        return self::selectUserVo()
+            ->where('u.user_name', $username)
+            ->first();
     }
 
     /**

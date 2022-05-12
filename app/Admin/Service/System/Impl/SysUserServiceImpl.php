@@ -5,6 +5,8 @@ namespace App\Admin\Service\System\Impl;
 use App\Admin\Core\Constant\UserConstants;
 use App\Admin\Core\Exception\ParametersException;
 use App\Admin\Core\Security\SecurityUtils;
+use App\Admin\Model\SysPost;
+use App\Admin\Model\SysRole;
 use App\Admin\Model\SysUser;
 use App\Admin\Model\SysUserPost;
 use App\Admin\Model\SysUserRole;
@@ -253,5 +255,59 @@ class SysUserServiceImpl implements ISysUserService
     function selectUserByUserName(array $sysUser)
     {
         return SysUser::selectUserByUser($sysUser);
+    }
+
+    /**
+     * 根据用户ID查询用户所属角色组
+     *
+     * @param string $userName 用户名
+     * @return false|string|null 结果
+     */
+    function selectUserRoleGroup(string $userName)
+    {
+        $list = SysRole::selectRolesByUserName($userName);
+        $idsStr = '';
+        foreach ($list as $role)
+        {
+            $idsStr.=$role['roleName'].',';
+        }
+        if($idsStr != '')
+        {
+            return substr($idsStr, 0, -1);
+        }
+        return $idsStr;
+    }
+
+    /**
+     * 根据用户ID查询用户所属岗位组
+     *
+     * @param string $userName 用户名
+     * @return false|string|null 结果
+     */
+    function selectUserPostGroup(string $userName)
+    {
+        $list = SysPost::selectPostsByUserName($userName);
+        $idsStr = '';
+        foreach ($list as $post)
+        {
+            $idsStr.=$post['postName'].',';
+        }
+        if($idsStr != '')
+        {
+            return substr($idsStr, 0, -1);
+        }
+        return $idsStr;
+    }
+
+    /**
+     * 更改用户信息
+     *
+     * @param int $userId 用户编号
+     * @param array $sysUser 用户信息
+     * @return int 结果
+     */
+    function updateUserProfile(int $userId, array $sysUser): int
+    {
+        return SysUser::updatetUser($userId, $sysUser);
     }
 }

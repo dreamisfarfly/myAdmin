@@ -108,6 +108,29 @@ Route::prefix('/system/role')->group(function(){
 });
 
 /**
+ * 个人信息
+ */
+Route::prefix('/system/user/profile')->group(function(){
+
+    /**
+     * 个人信息
+     */
+    Route::get('/','SysProfileController@profile');
+
+    /**
+     * 更新个人信息
+     */
+    Route::put('/','SysProfileController@updateProfile');
+
+    /**
+     * 修改密码
+     */
+    Route::put('/updatePwd','SysProfileController@updatePwd');
+
+
+});
+
+/**
  * 数据字典信息
  */
 Route::prefix('/system/dict/type')->group(function(){

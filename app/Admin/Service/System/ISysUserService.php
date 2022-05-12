@@ -110,4 +110,29 @@ interface ISysUserService
      */
     function resetPwd(int $userId, array $user);
 
+    /**
+     * 根据用户ID查询用户所属角色组
+     *
+     * @param string $userName 用户名
+     * @return mixed 结果
+     */
+    function selectUserRoleGroup(string $userName);
+
+    /**
+     * 根据用户ID查询用户所属岗位组
+     *
+     * @param string $userName 用户名
+     * @return mixed 结果
+     */
+    function selectUserPostGroup(string $userName);
+
+    /**
+     * 更改用户信息
+     *
+     * @param int $userId 用户编号
+     * @param array $sysUser 用户信息
+     * @return mixed 结果
+     */
+    function updateUserProfile(int $userId, array $sysUser);
+
 }

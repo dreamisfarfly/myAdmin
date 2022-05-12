@@ -145,4 +145,25 @@ class SysPost extends BaseModel
         return self::query()->whereIn('post_id', $ids)->delete();
     }
 
+    /**
+     * 查询用户所属岗位组
+     *
+     * @param string $userName 用户名
+     * @return Builder[]|Collection 结果
+     */
+    public static function selectPostsByUserName(string $userName)
+    {
+        return self::query()
+            ->from('sys_post as p')
+            ->leftJoin('sys_user_post as up',function($query){
+                $query->on('up.post_id', '=', 'p.post_id');
+            })
+            ->leftJoin('sys_user as u',function($query){
+                $query->on('u.user_id', '=', 'up.user_id');
+            })
+            ->where('u.user_name', $userName)
+            ->select(['p.post_id as postId','p.post_name as postName','p.post_code as postCode'])
+            ->get();
+    }
+
 }

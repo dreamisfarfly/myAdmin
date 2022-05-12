@@ -171,6 +171,20 @@ class SysRole extends BaseModel
     }
 
     /**
+     * 根据用户ID查询角色
+     *
+     * @param string $userName 用户名
+     * @return Builder[]|Collection 角色列表
+     */
+    public static function selectRolesByUserName(string $userName)
+    {
+        return self::selectRoleVo()
+            ->where('r.del_flag', 0)
+            ->where('u.user_name', $userName)
+            ->get();
+    }
+
+    /**
      * 查询
      * @return Builder
      */
