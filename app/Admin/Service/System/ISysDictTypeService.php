@@ -28,11 +28,19 @@ interface ISysDictTypeService
     /**
      * 校验字典类型称是否唯一
      *
-     * @param int $dictId 字典类型
      * @param string $dictType 字典类型
+     * @param ?int $dictId 字典编号
      * @return mixed 结果
      */
-    function checkDictTypeUnique(int $dictId, string $dictType);
+    function checkDictTypeUnique(string $dictType, ?int $dictId = null);
+
+    /**
+     * 校验字典类型称是否存在
+     *
+     * @param string $dictType 字典类型
+     * @return mixed
+     */
+    function checkDictTypeExist(string $dictType);
 
     /**
      * 新增保存字典类型信息

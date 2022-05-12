@@ -46,14 +46,14 @@ class SysDictTypeServiceImpl implements ISysDictTypeService
     /**
      * 校验字典类型称是否唯一
      *
-     * @param int $dictId 字典类型
+     * @param ?int $dictId 字典类型
      * @param string $dictType 字典类型
      * @return mixed 结果
      */
-    function checkDictTypeUnique(int $dictId, string $dictType): bool
+    function checkDictTypeUnique(string $dictType, ?int $dictId = null): bool
     {
          $dictTypeData = SysDictType::checkDictTypeUnique($dictType);
-         if($dictTypeData != null && $dictTypeData->dictId == $dictId)
+         if($dictTypeData != null && $dictTypeData->dictId != $dictId)
          {
              return UserConstants::NOT_UNIQUE;
          }
@@ -167,5 +167,16 @@ class SysDictTypeServiceImpl implements ISysDictTypeService
             return $dictData;
         }
         return null;
+    }
+
+    /**
+     * 校验字典类型称是否存在
+     *
+     * @param string $dictType 字典类型
+     * @return bool
+     */
+    function checkDictTypeExist(string $dictType): bool
+    {
+        return SysDictType::checkDictTypeExist($dictType) > 0;
     }
 }

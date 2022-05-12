@@ -156,4 +156,25 @@ class SysDictData extends BaseModel
         return self::query()->whereIn('dict_code', $dictCodes)->delete();
     }
 
+    /**
+     * 查询字典数据记录
+     * @param array $dictData
+     * @return Builder|Model|mixed|object|null
+     */
+    public static function selectDictDataByDictData(array $dictData)
+    {
+        return self::query()
+            ->when(isset($dictData['dictLabel']),function($query)use($dictData){
+                $query->where('dict_label', $dictData['dictLabel']);
+            })
+            ->when(isset($dictData['dictValue']),function($query)use($dictData){
+                $query->where('dict_value', $dictData['dictValue']);
+            })
+            ->when(isset($dictData['dictType']),function($query)use($dictData){
+                $query->where('dict_type', $dictData['dictType']);
+            })
+            ->select(self::SELECT_PARAMS)
+            ->first();
+    }
+
 }

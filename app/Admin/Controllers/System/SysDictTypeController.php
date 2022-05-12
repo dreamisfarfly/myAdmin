@@ -61,7 +61,6 @@ class SysDictTypeController extends BaseController
         Authentication::hasPermit('system:dict:add');
         $sysDictTypeData = $sysDictType->getParamsData(['dictName','dictType','status','remark']);
         $sysDictTypeData['createBy'] = SecurityUtils::getUsername();
-        $sysDictTypeData['createTime'] = date('Y-m-d H:i:s');
         return $this->toAjax($this->sysDictTypeService->insertDictType($sysDictTypeData));
     }
 
@@ -72,9 +71,9 @@ class SysDictTypeController extends BaseController
     public function edit(int $id, SysDictType $sysDictType): JsonResponse
     {
         Authentication::hasPermit('system:dict:edit');
-        if(UserConstants::NOT_UNIQUE == $this->sysDictTypeService->checkDictTypeUnique($id, $sysDictType->get('dictType')))
+        if(UserConstants::NOT_UNIQUE == $this->sysDictTypeService->checkDictTypeUnique($sysDictType->get('dictType'),$id))
         {
-            throw new ParametersException('新增字典失败，字典类型已存在');
+            throw new ParametersException('修改字典失败，字典类型已存在');
         }
         $sysDictTypeData = $sysDictType->getParamsData(['dictName','dictType','status','remark']);
         $sysDictTypeData['updateBy'] = SecurityUtils::getUsername();
@@ -85,10 +84,11 @@ class SysDictTypeController extends BaseController
      * 删除字典类型
      * @throws ParametersException
      */
-    public function remove(Ids $ids): JsonResponse
+    public function remove(string $ids): JsonResponse
     {
         Authentication::hasPermit('system:dict:remove');
-        return $this->toAjax($this->sysDictTypeService->deleteDictTypeByIds($ids->getParamsData(['ids'])));
+        $ids = explode(',', $ids);
+        return $this->toAjax($this->sysDictTypeService->deleteDictTypeByIds($ids));
     }
 
     /**

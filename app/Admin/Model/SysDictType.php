@@ -76,7 +76,8 @@ class SysDictType extends BaseModel
      */
     public static function insertDictType(array $data): bool
     {
-        return self::query()->insert(self::parametersFilter($data));
+        $data['createTime'] = date('Y-m-d H:i:s');
+        return self::query()->insert(self::uncamelize($data));
     }
 
     /**
@@ -117,31 +118,13 @@ class SysDictType extends BaseModel
     }
 
     /**
-     * 过滤参数
-     * @param array $data 过滤数据
-     * @return array 过滤后数据
+     * 验证字典类型是否存在
+     * @param string $dictType
+     * @return int
      */
-    public static function parametersFilter(array $data): array
+    public static function checkDictTypeExist(string $dictType): int
     {
-        $fileData = [];
-        if(isset($data['dictName']))
-            $fileData['dict_name'] = $data['dictName'];
-        if(isset($data['dictType']))
-            $fileData['dict_type'] = $data['dictType'];
-        if(isset($data['status']))
-            $fileData['status'] = $data['status'];
-        if(isset($data['remark']))
-            $fileData['remark'] = $data['remark'];
-        if(isset($data['createTime']))
-            $fileData['create_time'] = $data['createTime'];
-        if(isset($data['createBy']))
-            $fileData['create_by'] = $data['createBy'];
-        if(isset($data['updateBy']))
-            $fileData['update_by'] = $data['updateBy'];
-        if(isset($data['updateTime']))
-            $fileData['update_time'] = $data['updateTime'];
-        return $fileData;
+        return self::query()->where('dict_type', $dictType)->count();
     }
-
 
 }

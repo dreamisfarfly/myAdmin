@@ -137,7 +137,8 @@ Route::prefix('/system/dict/type')->group(function(){
     /**
      * 删除
      */
-    Route::delete('/', 'SysDictTypeController@remove');
+    Route::delete('/{ids}', 'SysDictTypeController@remove')
+        ->where('ids','^\d+(,\d+)*$');
 
     /**
      * 获取字典选择框列表

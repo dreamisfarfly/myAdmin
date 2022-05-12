@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers\System;
 
+use App\Admin\Core\Constant\UserConstants;
 use App\Admin\Core\Controller\BaseController;
 use App\Admin\Core\Domain\AjaxResult;
 use App\Admin\Core\Security\Authentication;
@@ -9,7 +10,9 @@ use App\Admin\Core\Security\SecurityUtils;
 use App\Admin\Request\System\SysDictDataListRequest;
 use App\Admin\Request\System\SysDictDataRequest;
 use App\Admin\Service\System\Impl\SysDictDataServiceImpl;
+use App\Admin\Service\System\Impl\SysDictTypeServiceImpl;
 use App\Admin\Service\System\ISysDictDataService;
+use App\Admin\Service\System\ISysDictTypeService;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -26,11 +29,18 @@ class SysDictDataController extends BaseController
     protected ISysDictDataService $sysDictDataService;
 
     /**
-     * @param SysDictDataServiceImpl $sysDictDataServiceImpl
+     * @var ISysDictTypeService
      */
-    public function __construct(SysDictDataServiceImpl $sysDictDataServiceImpl)
+    protected ISysDictTypeService $sysDictTypeService;
+
+    /**
+     * @param SysDictDataServiceImpl $sysDictDataServiceImpl
+     * @param SysDictTypeServiceImpl $sysDictTypeService
+     */
+    public function __construct(SysDictDataServiceImpl $sysDictDataServiceImpl, SysDictTypeServiceImpl $sysDictTypeService)
     {
         $this->sysDictDataService = $sysDictDataServiceImpl;
+        $this->sysDictTypeService = $sysDictTypeService;
     }
 
     /**
@@ -71,6 +81,20 @@ class SysDictDataController extends BaseController
     {
         Authentication::hasPermit('system:dict:add');
         $sysDictData = $sysDictDataRequest->getParamsData(['cssClass','dictLabel','dictSort','dictType','dictValue','listClass','remark','status']);
+        if(!$this->sysDictTypeService->checkDictTypeExist($sysDictData['dictType']))
+        {
+            return (new AjaxResult())->error('新增字典数据失败，字典类型不存在');
+        }
+        if(isset($sysDictData['dictLabel']) &&
+            UserConstants::NOT_UNIQUE == $this->sysDictDataService->checkAssignUnique(['dictLabel'=>$sysDictData['dictLabel'],'dictType'=>$sysDictData['dictType']]))
+        {
+            return (new AjaxResult())->error('新增字典数据'.$sysDictData['dictLabel'].'失败，数据标签已存在');
+        }
+        if(isset($sysDictData['dictValue']) &&
+            UserConstants::NOT_UNIQUE == $this->sysDictDataService->checkAssignUnique(['dictValue'=>$sysDictData['dictValue'],'dictType'=>$sysDictData['dictType']]))
+        {
+            return (new AjaxResult())->error('新增字典数据'.$sysDictData['dictLabel'].'失败，数据键值已存在');
+        }
         $sysDictData['createBy'] = SecurityUtils::getUsername();
         return $this->toAjax($this->sysDictDataService->insertDictData($sysDictData));
     }
@@ -82,6 +106,20 @@ class SysDictDataController extends BaseController
     {
         Authentication::hasPermit('system:dict:edit');
         $sysDictData = $sysDictDataRequest->getParamsData(['cssClass','dictLabel','dictSort','dictType','dictValue','listClass','remark','status']);
+        if(!$this->sysDictTypeService->checkDictTypeExist($sysDictData['dictType']))
+        {
+            return (new AjaxResult())->error('修改字典数据失败，字典类型不存在');
+        }
+        if(isset($sysDictData['dictLabel']) &&
+            UserConstants::NOT_UNIQUE == $this->sysDictDataService->checkAssignUnique(['dictLabel'=>$sysDictData['dictLabel'],'dictType'=>$sysDictData['dictType']],$dictCode))
+        {
+            return (new AjaxResult())->error('修改字典数据'.$sysDictData['dictLabel'].'失败，数据标签已存在');
+        }
+        if(isset($sysDictData['dictValue']) &&
+            UserConstants::NOT_UNIQUE == $this->sysDictDataService->checkAssignUnique(['dictValue'=>$sysDictData['dictValue'],'dictType'=>$sysDictData['dictType']],$dictCode))
+        {
+            return (new AjaxResult())->error('修改字典数据'.$sysDictData['dictLabel'].'失败，数据键值已存在');
+        }
         $sysDictData['updateBy'] = SecurityUtils::getUsername();
         return $this->toAjax($this->sysDictDataService->updateDictData($dictCode, $sysDictData));
     }

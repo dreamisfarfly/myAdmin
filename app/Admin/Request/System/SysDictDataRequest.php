@@ -35,7 +35,7 @@ class SysDictDataRequest extends BaseRequest
             ],
             'listClass' => [
                 'required',
-                'in:default'
+                'in:default,primary,success,info,warning,danger'
             ]
         ];
     }

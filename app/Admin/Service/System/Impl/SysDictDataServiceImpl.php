@@ -2,6 +2,7 @@
 
 namespace App\Admin\Service\System\Impl;
 
+use App\Admin\Core\Constant\UserConstants;
 use App\Admin\Core\Utils\DictUtils;
 use App\Admin\Model\SysDictData;
 use App\Admin\Service\System\ISysDictDataService;
@@ -103,5 +104,22 @@ class SysDictDataServiceImpl implements ISysDictDataService
             DictUtils::clearDictCache();
         }
         return $row;
+    }
+
+    /**
+     * 检测指定条件是否唯一
+     *
+     * @param array $sysDictData 字典数据信息
+     * @param int|null $dictCode 字典数据编号
+     * @return string 结果
+     */
+    function checkAssignUnique(array $sysDictData, ?int $dictCode = null): string
+    {
+        $info = SysDictData::selectDictDataByDictData($sysDictData);
+        if($info != null && $info['dictCode'] != $dictCode)
+        {
+            return UserConstants::NOT_UNIQUE;
+        }
+        return UserConstants::UNIQUE;
     }
 }

@@ -59,4 +59,13 @@ interface ISysDictDataService
      */
     function deleteDictDataByIds(array $ids);
 
+    /**
+     * 检测指定条件是否唯一
+     *
+     * @param array $sysDictData 字典数据信息
+     * @param int|null $dictCode 字典数据编号
+     * @return mixed 结果
+     */
+    function checkAssignUnique(array $sysDictData, ?int $dictCode = null);
+
 }
