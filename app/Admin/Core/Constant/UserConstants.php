@@ -24,4 +24,6 @@ interface UserConstants
     /** 部门停用状态 */
     const DEPT_DISABLE = '1';
 
+    /** 是否为系统默认（是） */
+    const YES = 'Y';
 }

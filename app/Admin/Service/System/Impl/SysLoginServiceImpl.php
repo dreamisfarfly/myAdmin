@@ -30,13 +30,13 @@ class SysLoginServiceImpl implements ISysLoginService
     {
         if(!Redis::exists($uuid) || Redis::get($uuid) != $code)
         {
-            throw new ParametersException('验证码过期或者不存在');
+            throw new ParametersException('验证码错误');
         }
         Redis::set($uuid,null); //删除验证码
         $userInfo = SysUser::selectUserByUsername($username);
         if(null == $userInfo || $userInfo->password != md5($password))
         {
-            throw new ParametersException('用户不存在或者密码错误');
+            throw new ParametersException('用户不存在/密码错误');
         }
         return (new TokenService())->createToken(['sysUser' => $userInfo->toArray()]);
     }

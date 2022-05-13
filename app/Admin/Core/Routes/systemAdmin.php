@@ -5,8 +5,16 @@ use Illuminate\Support\Facades\Route;
  * 系统路由配置
  */
 
-//登录接口
-Route::post('login','SysLoginController@login');
+//系统登录日志
+Route::middleware('systemLoginLogs')->group(function(){
+
+    //登录接口
+    Route::post('login','SysLoginController@login');
+
+    //退出登录
+    Route::post('logout','SysLoginController@logout');
+
+});
 
 //验证码接口
 Route::namespace('Common')->group(function(){
@@ -18,9 +26,6 @@ Route::get('getInfo','SysLoginController@getInfo');
 
 //登录接口
 Route::get('getRouters','SysLoginController@getRouters');
-
-//退出登录
-Route::post('logout','SysLoginController@logout');
 
 /**
  * 系统用户
@@ -333,7 +338,7 @@ Route::prefix('/system/post')->group(function(){
      * 删除
      */
     Route::delete('/{ids}', 'SysPostController@remove')
-        ->where('ids','^\d+(,\d+)*$');;
+        ->where('ids','^\d+(,\d+)*$');
 
 
 });
@@ -344,9 +349,42 @@ Route::prefix('/system/post')->group(function(){
 Route::prefix('/system/config')->group(function(){
 
     /**
+     * 列表
+     */
+    Route::get('/list','SysConfigController@list');
+
+    /**
+     * 详细
+     */
+    Route::get('/{configId}', 'SysConfigController@getInfo')
+        ->where('configId','^[1-9]\d*$');
+
+    /**
+     * 添加
+     */
+    Route::post('/','SysConfigController@add');
+
+    /**
+     * 编辑
+     */
+    Route::put('/{configId}','SysConfigController@edit')
+        ->where('configId', '^[1-9]\d*$');
+
+    /**
+     * 删除参数配置
+     */
+    Route::delete('/{configIds}', 'SysConfigController@remove')
+        ->where('configIds', '^\d+(,\d+)*$');
+
+    /**
      * 根据参数键名查询参数值
      */
     Route::get('/configKey/{configKey}','SysConfigController@getConfigKey');
+
+    /**
+     * 清空缓存
+     */
+    Route::delete('/refreshCache','SysConfigController@clearCache');
 
 });
 
@@ -366,6 +404,18 @@ Route::namespace('Monitor')->prefix('monitor')->group(function(){
          * 列表
          */
         Route::delete('/{tokenId}', 'SysUserOnlineController@forceLogout');
+
+    });
+
+    /**
+     * 系统访问日志
+     */
+    Route::prefix('logininfor')->group(function(){
+
+        /**
+         * 列表
+         */
+        Route::get('list', 'SysLogininforController@list');
 
     });
 

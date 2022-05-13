@@ -35,6 +35,19 @@ class BaseModel extends Model
     {
         $pageNum = PagingParametersUtil::getPagingParam('pageNum');
         $pageSize = PagingParametersUtil::getPagingParam('pageSize',10);
+        $sort = PagingParametersUtil::getPagingSortParam();
+        if($sort != null)
+        {
+            Log::info(1111);
+            if($sort['sort'] == 'asc')
+            {
+                $builder->orderBy(self::uncamelizeStr($sort['column']));
+            }
+            if($sort['sort'] == 'desc')
+            {
+                $builder->orderByDesc(self::uncamelizeStr($sort['column']));
+            }
+        }
         return $builder->paginate($pageSize,['*'],'pageNum',$pageNum);
     }
 
@@ -59,6 +72,18 @@ class BaseModel extends Model
             }
         }
         return $temp;
+    }
+
+    /**
+     * 驼峰命名转下划线命名
+     *
+     * @param string $camelCapsArray
+     * @param string $separator
+     * @return string
+     */
+    public static function uncamelizeStr(string $camelCapsArray, string $separator='_'): string
+    {
+        return strtolower(preg_replace('/([a-z])([A-Z])/', "$1" . $separator . "$2", $camelCapsArray));
     }
 
     /**

@@ -14,6 +14,8 @@ use App\Admin\Service\System\ISysLoginService;
 use App\Admin\Service\System\ISysMenuService;
 use App\Admin\Service\System\ISysPermissionService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 /**
  * 登录验证
@@ -67,13 +69,14 @@ class SysLoginController extends BaseController
      */
     public function login(LoginBody $loginBody): JsonResponse
     {
+        request()->attributes->set('userName',$loginBody->get('username'));
         $token = $this->sysLoginService->login(
             $loginBody->get('username'),
             $loginBody->get('password'),
             $loginBody->get('code'),
             $loginBody->get('uuid')
         );
-        return (new AjaxResult())->put(['token'=>$token])->success();
+        return (new AjaxResult())->put(['token'=>$token])->msg('登录成功');
     }
 
     /**
@@ -110,11 +113,17 @@ class SysLoginController extends BaseController
 
     /**
      * 退出登录
+     * @param Request $request
      * @return JsonResponse
      */
-    public function logout(): JsonResponse
+    public function logout(Request $request): JsonResponse
     {
-        return (new AjaxResult())->success();
+        $loginUser = $this->tokenService->getLoginUser();
+        if($loginUser != null){
+            $this->tokenService->logout($loginUser);
+            $request->attributes->set('userName',$loginUser['sysUser']['userName']);
+        }
+        return (new AjaxResult())->msg('退出成功');
     }
 
 }

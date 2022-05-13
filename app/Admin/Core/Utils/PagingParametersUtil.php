@@ -29,4 +29,34 @@ class PagingParametersUtil
         }
     }
 
+    /**
+     * 排序参数
+     * @return string[]|null
+     */
+    public static function getPagingSortParam(): ?array
+    {
+        try {
+            if(request()->exists('orderByColumn') && request()->exists('isAsc'))
+            {
+                if(request()->get('isAsc') == 'ascending')
+                {
+                    return [
+                        'column' => request()->get('orderByColumn'),
+                        'sort' => 'asc'
+                    ];
+                }
+                if(request()->get('isAsc') == 'descending')
+                {
+                    return [
+                        'column' => request()->get('orderByColumn'),
+                        'sort' => 'desc'
+                    ];
+                }
+            }
+        } catch (NotFoundExceptionInterface | ContainerExceptionInterface $e) {
+            return null;
+        }
+        return null;
+    }
+
 }

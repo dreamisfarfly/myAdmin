@@ -4,6 +4,7 @@ namespace App\Http;
 
 use App\Admin\Core\Middleware\AuthenticationToken;
 use App\Admin\Core\Middleware\EnableCrossRequestMiddleware;
+use App\Admin\Core\Middleware\SysLoginInForMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -72,5 +73,6 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'systemLoginLogs' => SysLoginInForMiddleware::class,
     ];
 }

@@ -4,6 +4,7 @@ namespace App\Admin\Controllers\System\Monitor;
 
 use App\Admin\Core\Controller\BaseController;
 use App\Admin\Core\Security\Authentication;
+use App\Admin\Service\System\ISysConfigService;
 
 /**
  * 操作日志记录
