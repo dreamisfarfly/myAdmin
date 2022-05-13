@@ -134,6 +134,17 @@ class TokenService
     }
 
     /**
+     * 删除登录信息
+     *
+     * @param array $loginUser
+     */
+    public function logout(array $loginUser)
+    {
+        $userKey = self::getTokenKey($loginUser['token']);
+        Redis::del($userKey);
+    }
+
+    /**
      * 刷新令牌有效期
      *
      * @param array 登录信息
