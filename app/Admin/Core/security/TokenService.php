@@ -4,6 +4,7 @@ namespace App\Admin\Core\Security;
 
 use App\Admin\Core\Config\JwtConfig;
 use App\Admin\Core\Constant\Constants;
+use App\Admin\Core\Utils\HttpUtil;
 use App\Admin\Core\Utils\Uuid\IdUtils;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
@@ -160,11 +161,14 @@ class TokenService
     /**
      * 设置用户代理信息
      *
-     * @param array $userInfo 登录信息
+     * @param array $loginUser 登录信息
      */
-    private function setUserAgent(array $userInfo)
+    private function setUserAgent(array &$loginUser)
     {
-
+        $loginUser['ipaddr'] = request()->getClientIp();
+        $loginUser['loginLocation'] = HttpUtil::getAddress($loginUser['ipaddr']);
+        $loginUser['browser'] = HttpUtil::getBroswer();
+        $loginUser['os'] = HttpUtil::getOs();
     }
 
     /**

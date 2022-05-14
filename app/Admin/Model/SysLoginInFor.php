@@ -71,4 +71,23 @@ class SysLoginInFor extends BaseModel
         return self::query()->insert(self::uncamelize($sysLoginInFor));
     }
 
+    /**
+     * 批量删除系统登录日志
+     *
+     * @param array $infoIds
+     * @return mixed
+     */
+    public static function deleteLoginInForByIds(array $infoIds)
+    {
+        return self::query()->whereIn('info_id', $infoIds)->delete();
+    }
+
+    /**
+     * 清空系统登录日志
+     */
+    public static function cleanLoginInFor()
+    {
+        self::query()->truncate();
+    }
+
 }

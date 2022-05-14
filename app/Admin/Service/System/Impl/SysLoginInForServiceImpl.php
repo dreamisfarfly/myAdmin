@@ -25,4 +25,24 @@ class SysLoginInForServiceImpl implements ISysLoginInForService
         return SysLoginInFor::selectLogininforList($queryParam);
     }
 
+    /**
+     * 批量删除系统登录日志
+     *
+     * @param array $infoIds 需要删除的登录日志ID
+     * @return mixed 结果
+     */
+    function deleteLoginInForByIds(array $infoIds)
+    {
+        return SysLoginInFor::deleteLoginInForByIds($infoIds);
+    }
+
+    /**
+     * 清空系统登录日志
+     *
+     * @return void
+     */
+    function cleanLoginInFor()
+    {
+        SysLoginInFor::cleanLoginInFor();
+    }
 }

@@ -18,4 +18,19 @@ interface ISysLoginInForService
      */
     function selectLoginInForList(array $queryParam);
 
+    /**
+     * 批量删除系统登录日志
+     *
+     * @param array $infoIds 需要删除的登录日志ID
+     * @return mixed 结果
+     */
+    function deleteLoginInForByIds(array $infoIds);
+
+    /**
+     * 清空系统登录日志
+     *
+     * @return mixed
+     */
+    function cleanLoginInFor();
+
 }

@@ -38,14 +38,18 @@ class SysUserOnlineServiceImpl implements ISysUserOnlineService
             {
                 break;
             }
+            if(isset($loginUser['ipaddr']) && !preg_match('/^'.$loginUser['ipaddr'].'/',$loginUserData['ipaddr']))
+            {
+                break;
+            }
             array_push($items,[
                 'tokenId' => $loginUserData['token'],
-                'deptName' => 'xxx',
+                'deptName' => $loginUserData['sysUser']['deptName'],
                 'userName' => $loginUserData['sysUser']['userName'],
-                'ipaddr' => '127.0.0.1',
-                'browser' => 'Chrome 9',
-                'loginLocation' => '长沙',
-                'os' => 'Windows 10',
+                'ipaddr' => $loginUserData['ipaddr'],
+                'browser' => $loginUserData['browser'],
+                'loginLocation' => $loginUserData['loginLocation'],
+                'os' => $loginUserData['os'],
                 'loginTime' => date('Y-m-d H:i:s', $loginUserData['loginTime'])
             ]);
         }

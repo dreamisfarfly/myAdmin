@@ -417,6 +417,41 @@ Route::namespace('Monitor')->prefix('monitor')->group(function(){
          */
         Route::get('list', 'SysLogininforController@list');
 
+        /**
+         * 删除
+         */
+        Route::delete('/{infoIds}', 'SysLogininforController@remove')
+            ->where('infoIds', '^\d+(,\d+)*$');
+
+        /**
+         * 清空登录日志
+         */
+        Route::delete('clean', 'SysLogininforController@clean');
+
+    });
+
+    /**
+     * 操作日志
+     */
+    Route::prefix('operlog')->group(function(){
+
+        /**
+         * 列表
+         */
+        Route::get('/list', 'SysOperateLogController@list');
+
+        /**
+         * 删除
+         */
+        Route::delete('/{operIds}', 'SysOperateLogController@remove')
+            ->where('operIds', '^\d+(,\d+)*$');
+
+        /**
+         * 清空
+         */
+        Route::delete('/clean', 'SysOperateLogController@clean');
+
+
     });
 
 });

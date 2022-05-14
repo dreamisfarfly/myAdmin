@@ -3,6 +3,7 @@
 namespace App\Admin\Controllers\System\Monitor;
 
 use App\Admin\Core\Controller\BaseController;
+use App\Admin\Core\Domain\AjaxResult;
 use App\Admin\Core\Security\Authentication;
 use App\Admin\Request\System\SysLoginInForListRequest;
 use App\Admin\Service\System\Impl\SysLoginInForServiceImpl;
@@ -42,6 +43,29 @@ class SysLoginInForController extends BaseController
                 $sysLoginInForListRequest->getParamsData(['ipaddr','userName','status','beginTime','endTime'])
             )
         );
+    }
+
+    /**
+     * 删除系统访问日志
+     * @param string $infoIds
+     * @return JsonResponse
+     */
+    public function remove(string $infoIds): JsonResponse
+    {
+        Authentication::hasPermit('monitor:logininfor:remove');
+        $infoIds = explode(',', $infoIds);
+        return $this->toAjax($this->sysLoginInForService->deleteLoginInForByIds($infoIds));
+    }
+
+    /**
+     * 清空登录日志
+     * @return JsonResponse
+     */
+    public function clean(): JsonResponse
+    {
+        Authentication::hasPermit('monitor:logininfor:remove');
+        $this->sysLoginInForService->cleanLoginInFor();
+        return (new AjaxResult())->success();
     }
 
 }

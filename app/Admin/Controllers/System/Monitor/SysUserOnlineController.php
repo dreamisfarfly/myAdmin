@@ -41,7 +41,7 @@ class SysUserOnlineController extends BaseController
     {
         Authentication::hasPermit('monitor:online:list');
         return $this->sysUserOnlineService->loginUserToUserOnline(
-            $baseQueryRequest->getParamsData(['userName'])
+            $baseQueryRequest->getParamsData(['userName','ipaddr'])
         );
     }
 
