@@ -56,13 +56,13 @@ class SysDeptController extends BaseController
     {
         Authentication::hasPermit('system:dept:list');
         $deps = $this->sysDeptService->selectDeptList();
-        $data = $deps->toArray();
-        foreach ($data as $key => $item)
+        $data = [];
+        foreach ($deps as $key => $item)
         {
 
-            if($item['deptId'] == $deptId || in_array($deptId,explode(',', $item['ancestors'])))
+            if($item['deptId'] != $deptId && !in_array($deptId,explode(',', $item['ancestors'])))
             {
-                unset($data[$key]);
+                array_push($data, $item);
             }
         }
         return (new AjaxResult())->success($data);
