@@ -6,6 +6,7 @@ use App\Admin\Core\Model\BaseModel;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * 用户模型
@@ -65,10 +66,10 @@ class SysUser extends BaseModel
                     $query->where('u.status', $queryParam['status']);
                 })
                 ->when(isset($queryParam['beginTime']),function($query) use($queryParam){
-                    $query->where('u.create_time', '>=', $queryParam['beginTime']);
+                    $query->where(DB::raw('CAST(u.create_time as DATE)'), '>=', $queryParam['beginTime']);
                 })
                 ->when(isset($queryParam['endTime']),function($query) use($queryParam){
-                    $query->where('u.create_time', '<=', $queryParam['endTime']);
+                    $query->where(DB::raw('CAST(u.create_time as DATE)'), '<=', $queryParam['endTime']);
                 })
                 ->when(isset($queryParam['phonenumber']),function($query) use($queryParam){
                     $query->where('u.phonenumber', 'like', $queryParam['phonenumber'].'%');

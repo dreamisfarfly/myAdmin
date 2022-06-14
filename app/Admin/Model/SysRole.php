@@ -7,6 +7,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -58,10 +59,10 @@ class SysRole extends BaseModel
                   $query->where('r.status', $queryParam['status']);
                 })
                 ->when(isset($queryParam['beginTime']),function($query)use($queryParam){
-                    $query->where('r.create_time', '>=', $queryParam['beginTime']);
+                    $query->where(DB::raw('CAST(r.create_time as DATE)'), '>=', $queryParam['beginTime']);
                 })
                 ->when(isset($queryParam['endTime']),function($query)use($queryParam){
-                    $query->where('r.create_time', '<=', $queryParam['endTime']);
+                    $query->where(DB::raw('CAST(r.create_time as DATE)'), '<=', $queryParam['endTime']);
                 })
                 ->select(self::SELECT_PARAMS)
         );

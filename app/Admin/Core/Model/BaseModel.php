@@ -38,7 +38,6 @@ class BaseModel extends Model
         $sort = PagingParametersUtil::getPagingSortParam();
         if($sort != null)
         {
-            Log::info(1111);
             if($sort['sort'] == 'asc')
             {
                 $builder->orderBy(self::uncamelizeStr($sort['column']));
