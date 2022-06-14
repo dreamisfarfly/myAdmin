@@ -13,9 +13,10 @@ interface ISysDictTypeService
     /**
      * 根据条件分页查询字典类型
      *
+     * @param array $queryParam
      * @return mixed
      */
-    function selectDictTypeList();
+    function selectDictTypeList(array $queryParam);
 
     /**
      * 根据字典类型ID查询信息

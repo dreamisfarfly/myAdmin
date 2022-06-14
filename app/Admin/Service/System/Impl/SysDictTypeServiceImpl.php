@@ -25,11 +25,12 @@ class SysDictTypeServiceImpl implements ISysDictTypeService
     /**
      * 根据条件分页查询字典类型
      *
+     * @param array $queryParam
      * @return LengthAwarePaginator
      */
-    function selectDictTypeList(): LengthAwarePaginator
+    function selectDictTypeList(array $queryParam): LengthAwarePaginator
     {
-        return SysDictType::selectDictTypeList();
+        return SysDictType::selectDictTypeList($queryParam);
     }
 
     /**

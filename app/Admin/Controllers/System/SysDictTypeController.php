@@ -10,6 +10,7 @@ use App\Admin\Core\Security\Authentication;
 use App\Admin\Core\Security\SecurityUtils;
 use App\Admin\Request\System\Ids;
 use App\Admin\Request\System\SysDictType;
+use App\Admin\Request\System\SysDictTypeListRequest;
 use App\Admin\Service\System\Impl\SysDictTypeServiceImpl;
 use App\Admin\Service\System\ISysDictTypeService;
 use Illuminate\Http\JsonResponse;
@@ -38,10 +39,12 @@ class SysDictTypeController extends BaseController
     /**
      * 列表
      */
-    public function list(): JsonResponse
+    public function list(SysDictTypeListRequest $sysDictTypeListRequest): JsonResponse
     {
         Authentication::hasPermit('system:dict:list');
-        return $this->getDataTable($this->sysDictTypeService->selectDictTypeList());
+        return $this->getDataTable($this->sysDictTypeService->selectDictTypeList(
+            $sysDictTypeListRequest->getParamsData(['dictName','dictType','status','beginTime','endTime'])
+        ));
     }
 
     /**

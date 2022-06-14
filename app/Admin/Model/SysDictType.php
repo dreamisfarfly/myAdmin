@@ -7,6 +7,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * 字典表 数据层
@@ -36,12 +37,28 @@ class SysDictType extends BaseModel
     /**
      * 根据条件分页查询字典类型
      *
+     * @param $queryParam
      * @return LengthAwarePaginator
      */
-    public static function selectDictTypeList(): LengthAwarePaginator
+    public static function selectDictTypeList($queryParam): LengthAwarePaginator
     {
         return self::customPagination(
             self::query()
+              ->when(isset($queryParam['dictName']),function($query)use($queryParam){
+                  $query->where('dict_name', 'like', $queryParam['dictName'].'%');
+              })
+              ->when(isset($queryParam['dictType']),function($query)use($queryParam){
+                  $query->where('dict_type', 'like', $queryParam['dictType'].'%');
+              })
+              ->when(isset($queryParam['status']),function($query)use($queryParam){
+                  $query->where('status', $queryParam['status']);
+              })
+              ->when(isset($queryParam['beginTime']),function($query)use($queryParam){
+                  $query->where(DB::raw('CAST(create_time as DATE)'), $queryParam['beginTime']);
+              })
+              ->when(isset($queryParam['endTime']),function($query)use($queryParam){
+                  $query->where(DB::raw('CAST(create_time as DATE)'), $queryParam['endTime']);
+              })
               ->select(self::SELECT_PARAMS)
         );
     }
