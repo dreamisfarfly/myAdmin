@@ -20,6 +20,7 @@ use App\Admin\Service\System\ISysPermissionService;
 use App\Admin\Service\System\ISysRoleService;
 use App\Admin\Service\System\ISysUserService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 /**
  * 角色信息
@@ -91,6 +92,8 @@ class SysRoleController extends BaseController
 
     /**
      * 新增角色
+     * @ForbidSubmit
+     * @Log(title = "角色管理", businessType = BusinessType.INSERT)
      */
     public function add(SysRoleRequest $sysRoleRequest): JsonResponse
     {
@@ -112,6 +115,8 @@ class SysRoleController extends BaseController
 
     /**
      * 修改保存角色
+     * @ForbidSubmit
+     * @Log(title = "角色管理", businessType = BusinessType.UPDATE)
      */
     public function edit(int $roleId, SysRoleRequest $sysRoleRequest): JsonResponse
     {
@@ -154,6 +159,7 @@ class SysRoleController extends BaseController
 
     /**
      * 状态修改
+     * @Log(title = "角色管理", businessType = BusinessType.UPDATE)
      * @throws ParametersException
      */
     public function changeStatus(SysRoleChangeStatusRequest $sysRoleChangeStatusRequest): JsonResponse
@@ -168,6 +174,7 @@ class SysRoleController extends BaseController
 
     /**
      * 删除角色
+     * @Log(title = "角色管理", businessType = BusinessType.DELETE)
      * @throws ParametersException
      */
     public function remove(string $roleIds): JsonResponse

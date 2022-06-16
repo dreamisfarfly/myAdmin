@@ -89,6 +89,8 @@ class SysMenuController extends BaseController
 
     /**
      * 新增菜单
+     * @ForbidSubmit
+     * @Log(title = "菜单管理", businessType = BusinessType.INSERT)
      * @throws ParametersException
      */
     public function add(SysMenuRequest $sysMenuRequest): JsonResponse
@@ -109,6 +111,8 @@ class SysMenuController extends BaseController
 
     /**
      * 修改菜单
+     * @ForbidSubmit
+     * @Log(title = "菜单管理", businessType = BusinessType.UPDATE)
      * @throws ParametersException
      */
     public function edit(int $menuId, SysMenuRequest $sysMenuRequest): JsonResponse
@@ -133,6 +137,7 @@ class SysMenuController extends BaseController
 
     /**
      * 删除菜单
+     * @Log(title = "菜单管理", businessType = BusinessType.DELETE)
      */
     public function remove(int $menuId): JsonResponse
     {

@@ -44,6 +44,8 @@ class SysOperateLogController extends BaseController
 
     /**
      * 操作日志删除
+     *
+     * @Log(title = "操作日志管理", businessType = BusinessType.DELETE)
      */
     public function remove(string $operIds): JsonResponse
     {
@@ -54,6 +56,8 @@ class SysOperateLogController extends BaseController
 
     /**
      * 操作日志全部清除
+     *
+     * @Log(title = "操作日志管理", businessType = BusinessType.CLEAN)
      */
     public function clean(): JsonResponse
     {

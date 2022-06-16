@@ -58,6 +58,9 @@ class SysDictTypeController extends BaseController
 
     /**
      * 新增字典类型
+     *
+     * @ForbidSubmit
+     * @Log(title = "字典管理", businessType = BusinessType.INSERT)
      */
     public function add(SysDictType $sysDictType): JsonResponse
     {
@@ -69,6 +72,9 @@ class SysDictTypeController extends BaseController
 
     /**
      * 修改字典类型
+     *
+     * @ForbidSubmit
+     * @Log(title = "字典管理", businessType = BusinessType.UPDATE)
      * @throws ParametersException
      */
     public function edit(int $id, SysDictType $sysDictType): JsonResponse
@@ -85,6 +91,8 @@ class SysDictTypeController extends BaseController
 
     /**
      * 删除字典类型
+     *
+     * @Log(title = "字典管理", businessType = BusinessType.DELETE)
      * @throws ParametersException
      */
     public function remove(string $ids): JsonResponse
@@ -96,6 +104,8 @@ class SysDictTypeController extends BaseController
 
     /**
      * 清空缓存
+     *
+     * @Log(title = "字典管理", businessType = BusinessType.CLEAN)
      */
     public function clearCache()
     {

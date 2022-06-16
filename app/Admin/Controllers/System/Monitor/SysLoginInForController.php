@@ -47,6 +47,8 @@ class SysLoginInForController extends BaseController
 
     /**
      * 删除系统访问日志
+     *
+     * @Log(title = "登录日志管理", businessType = BusinessType.DELETE)
      * @param string $infoIds
      * @return JsonResponse
      */
@@ -59,6 +61,8 @@ class SysLoginInForController extends BaseController
 
     /**
      * 清空登录日志
+     *
+     * @Log(title = "登录日志管理", businessType = BusinessType.CLEAN)
      * @return JsonResponse
      */
     public function clean(): JsonResponse

@@ -25,6 +25,7 @@ class SysOperLogServiceImpl implements ISysOperLogService
         $dataList = SysOperateLog::selectOperLogList($queryParam);
         foreach ($dataList as $item){
             $item->jsonResult = json_decode($item->jsonResult,true);
+            $item->operParam = json_decode($item->operParam,true);
         }
         return $dataList;
     }

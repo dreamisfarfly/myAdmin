@@ -47,6 +47,8 @@ class SysUserOnlineController extends BaseController
 
     /**
      * 强退用户
+     *
+     * @Log(title = "在线用户监控管理", businessType = BusinessType.FORCE)
      */
     public function forceLogout(string $tokenId): JsonResponse
     {

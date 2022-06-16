@@ -127,6 +127,7 @@ class SysUserController extends BaseController
 
     /**
      * 新增用户
+     *
      * @ForbidSubmit
      * @PreAuthorize(hasPermi = "system:user:add")
      * @Log(title = "用户管理", businessType = BusinessType.INSERT)
@@ -194,6 +195,7 @@ class SysUserController extends BaseController
 
     /**
      * 重置密码
+     * @Log(title = "用户管理", businessType = BusinessType.UPDATE)
      * @throws ParametersException
      */
     public function resetPwd(ResetSysUserPwdRequest $resetSysUserPwdRequest): JsonResponse
@@ -208,6 +210,7 @@ class SysUserController extends BaseController
 
     /**
      * 状态修改
+     * @Log(title = "用户管理", businessType = BusinessType.UPDATE)
      * @throws ParametersException
      */
     public function changeStatus(SysUserChangeStatusRequest $sysUserChangeStatusRequest): JsonResponse

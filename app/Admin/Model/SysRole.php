@@ -90,8 +90,8 @@ class SysRole extends BaseModel
     public static function deleteRoleByIds(array $roleIds): bool
     {
         return self::query()
-            ->where('role_id', $roleIds)
-            ->exists();
+            ->whereIn('role_id', $roleIds)
+            ->delete();
     }
 
     /**

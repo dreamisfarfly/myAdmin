@@ -99,6 +99,8 @@ class SysDeptController extends BaseController
 
     /**
      * 新增部门
+     * @ForbidSubmit
+     * @Log(title = "部门管理", businessType = BusinessType.INSERT)
      * @throws ParametersException
      */
     public function add(SysDeptRequest $sysDeptRequest): JsonResponse
@@ -115,6 +117,8 @@ class SysDeptController extends BaseController
 
     /**
      * 修改部门
+     * @ForbidSubmit
+     * @Log(title = "部门管理", businessType = BusinessType.UPDATE)
      */
     public function edit(int $deptId, SysDeptRequest $sysDeptRequest): JsonResponse
     {
@@ -138,6 +142,7 @@ class SysDeptController extends BaseController
 
     /**
      * 删除部门
+     * @Log(title = "部门管理", businessType = BusinessType.DELETE)
      */
     public function remove(int $deptId): JsonResponse
     {

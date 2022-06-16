@@ -87,6 +87,8 @@ class SysConfigController extends BaseController
     /**
      * 新增参数配置
      *
+     * @ForbidSubmit
+     * @Log(title = "参数配置管理", businessType = BusinessType.INSERT)
      * @param SysConfigRequest $sysConfigRequest
      * @return JsonResponse
      */
@@ -105,6 +107,8 @@ class SysConfigController extends BaseController
     /**
      * 修改参数配置
      *
+     * @ForbidSubmit
+     * @Log(title = "参数配置管理", businessType = BusinessType.UPDATE)
      * @param int $configId
      * @param SysConfigRequest $sysConfigRequest
      * @return JsonResponse
@@ -124,6 +128,7 @@ class SysConfigController extends BaseController
     /**
      * 删除参数配置
      *
+     * @Log(title = "参数配置管理", businessType = BusinessType.DELETE)
      * @param string $configIds
      * @return JsonResponse
      * @throws ParametersException
@@ -138,6 +143,7 @@ class SysConfigController extends BaseController
     /**
      * 清空缓存
      *
+     * @Log(title = "参数配置管理", businessType = BusinessType.CLEAN)
      * @return JsonResponse
      */
     public function clearCache(): JsonResponse

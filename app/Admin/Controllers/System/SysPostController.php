@@ -64,6 +64,8 @@ class SysPostController extends BaseController
     /**
      * 新增岗位
      *
+     * @ForbidSubmit
+     * @Log(title = "岗位管理", businessType = BusinessType.INSERT)
      * @param SysPostRequest $sysPostRequest
      * @return JsonResponse
      */
@@ -85,6 +87,9 @@ class SysPostController extends BaseController
 
     /**
      * 修改岗位
+     *
+     * @ForbidSubmit
+     * @Log(title = "岗位管理", businessType = BusinessType.UPDATE)
      * @param int $postId
      * @param SysPostRequest $sysPostRequest
      * @return JsonResponse
@@ -108,6 +113,7 @@ class SysPostController extends BaseController
     /**
      * 删除岗位
      *
+     * @Log(title = "岗位管理", businessType = BusinessType.DELETE)
      * @param string $ids
      * @return JsonResponse
      * @throws ParametersException

@@ -76,6 +76,9 @@ class SysDictDataController extends BaseController
 
     /**
      * 新增字典类型
+     *
+     * @ForbidSubmit
+     * @Log(title = "字典数据管理", businessType = BusinessType.INSERT)
      */
     public function add(SysDictDataRequest $sysDictDataRequest): JsonResponse
     {
@@ -101,6 +104,9 @@ class SysDictDataController extends BaseController
 
     /**
      * 修改保存字典类型
+     *
+     * @ForbidSubmit
+     * @Log(title = "字典数据管理", businessType = BusinessType.UPDATE)
      */
     public function edit(int $dictCode, SysDictDataRequest $sysDictDataRequest): JsonResponse
     {
@@ -125,7 +131,9 @@ class SysDictDataController extends BaseController
     }
 
     /**
-     * 修改保存字典类型
+     * 删除保存字典类型
+     *
+     * @Log(title = "字典数据管理", businessType = BusinessType.DELETE)
      */
     public function remove(string $ids): JsonResponse
     {
