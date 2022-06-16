@@ -219,7 +219,7 @@ class TokenService
      * 获取请求头中的token
      * @return array|string|string[]|null
      */
-    private function getToken()
+    public function getToken()
     {
         $token = request()->header($this->header);
         if(null != $token && self::startsWith(Constants::TOKEN_PREFIX, $token) != 0)

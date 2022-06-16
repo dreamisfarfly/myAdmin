@@ -4,6 +4,7 @@ namespace App\Admin\Service\System\Impl;
 
 use App\Admin\Model\SysOperateLog;
 use App\Admin\Service\System\ISysOperLogService;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * 操作日志 服务层
@@ -17,11 +18,15 @@ class SysOperLogServiceImpl implements ISysOperLogService
      * 查询系统操作日志集合
      *
      * @param array $queryParam 操作日志对象
-     * @return mixed 操作日志集合
+     * @return LengthAwarePaginator|null 操作日志集合
      */
-    function selectOperLogList(array $queryParam)
+    function selectOperLogList(array $queryParam): ?LengthAwarePaginator
     {
-        return SysOperateLog::selectOperLogList($queryParam);
+        $dataList = SysOperateLog::selectOperLogList($queryParam);
+        foreach ($dataList as $item){
+            $item->jsonResult = json_decode($item->jsonResult,true);
+        }
+        return $dataList;
     }
 
     /**

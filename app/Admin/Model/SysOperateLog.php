@@ -52,6 +52,17 @@ class SysOperateLog extends BaseModel
     }
 
     /**
+     * 新增查询记录操作日志
+     *
+     * @param array $data
+     * @return bool
+     */
+    public static function insert(array $data): bool
+    {
+        return self::query()->insert($data);
+    }
+
+    /**
      * 批量删除系统操作日志
      *
      * @param array $ids 需要删除的操作日志ID

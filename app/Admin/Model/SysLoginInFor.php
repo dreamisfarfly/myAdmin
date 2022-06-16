@@ -4,6 +4,7 @@ namespace App\Admin\Model;
 
 use App\Admin\Core\Model\BaseModel;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 /**
  * 系统访问日志情况信息 数据层
@@ -50,10 +51,10 @@ class SysLoginInFor extends BaseModel
                     $query->where('status', $queryParam['status']);
                 })
                 ->when(isset($queryParam['beginTime']),function($query)use($queryParam){
-                    $query->where('login_time', '>=', $queryParam['beginTime']);
+                    $query->where(DB::raw('CAST(login_time as DATE)'), '>=', $queryParam['beginTime']);
                 })
                 ->when(isset($queryParam['endTime']),function($query)use($queryParam){
-                    $query->where('login_time', '<=', $queryParam['endTime']);
+                    $query->where(DB::raw('CAST(login_time as DATE)'), '<=', $queryParam['endTime']);
                 })
                 ->select(self::SELECT_PARAMS)
         );

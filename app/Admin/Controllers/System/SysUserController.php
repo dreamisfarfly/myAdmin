@@ -127,10 +127,12 @@ class SysUserController extends BaseController
 
     /**
      * 新增用户
+     * @ForbidSubmit
+     * @PreAuthorize(hasPermi = "system:user:add")
+     * @Log(title = "用户管理", businessType = BusinessType.INSERT)
      */
     public function add(SysUserRequest $sysUserRequest): JsonResponse
     {
-        Authentication::hasPermit('system:user:add');
         $sysUser = $sysUserRequest->getParamsData(['deptId', 'email', 'nickName', 'password', 'phonenumber', 'postIds', 'remark', 'roleIds', 'sex', 'status', 'userName']);
         if(UserConstants::NOT_UNIQUE == $this->sysUserService->checkUserNameUnique($sysUser['userName']))
         {
@@ -153,6 +155,8 @@ class SysUserController extends BaseController
 
     /**
      * 修改用户
+     * @ForbidSubmit
+     * @Log(title = "用户管理", businessType = BusinessType.UPDATE)
      * @throws ParametersException
      */
     public function edit(int $userId, EditSysUserRequest $editSysUserRequest): JsonResponse
@@ -178,6 +182,7 @@ class SysUserController extends BaseController
 
     /**
      * 删除用户
+     * @Log(title = "用户管理", businessType = BusinessType.DELETE)
      * @throws ParametersException
      */
     public function remove(string $ids): JsonResponse

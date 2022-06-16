@@ -4,6 +4,8 @@ namespace App\Http;
 
 use App\Admin\Core\Middleware\AuthenticationToken;
 use App\Admin\Core\Middleware\EnableCrossRequestMiddleware;
+use App\Admin\Core\Middleware\OperationLogMiddleware;
+use App\Admin\Core\Middleware\RepeatSubmitAspect;
 use App\Admin\Core\Middleware\SysLoginInForMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -50,8 +52,10 @@ class Kernel extends HttpKernel
         ],
 
         'admin' => [
+            EnableCrossRequestMiddleware::class,
             AuthenticationToken::class,
-            EnableCrossRequestMiddleware::class
+            RepeatSubmitAspect::class,
+            OperationLogMiddleware::class,
         ],
 
     ];
