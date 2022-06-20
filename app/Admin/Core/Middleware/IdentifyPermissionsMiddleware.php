@@ -24,6 +24,7 @@ class IdentifyPermissionsMiddleware
      * @param Request $request
      * @param Closure $next
      * @return mixed
+     * @throws ParametersException
      */
     public function handle(Request $request, Closure $next)
     {
