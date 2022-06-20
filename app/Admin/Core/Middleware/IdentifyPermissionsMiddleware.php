@@ -2,6 +2,7 @@
 
 namespace App\Admin\Core\Middleware;
 
+use App\Admin\Core\Exception\AuthorityCertificationException;
 use App\Admin\Core\Exception\ParametersException;
 use App\Admin\Core\Security\SecurityUtils;
 use App\Admin\Core\Security\TokenService;
@@ -24,7 +25,7 @@ class IdentifyPermissionsMiddleware
      * @param Request $request
      * @param Closure $next
      * @return mixed
-     * @throws ParametersException
+     * @throws AuthorityCertificationException
      */
     public function handle(Request $request, Closure $next)
     {
@@ -43,7 +44,7 @@ class IdentifyPermissionsMiddleware
                     return $next($request);
                 }
                 if(!SysUserRole::authenticationPermissionString($loginUser['sysUser']['userId'], $res[1])){
-                    throw new ParametersException('您没有权限');
+                    throw new AuthorityCertificationException();
                 }
             }
         } catch (\ReflectionException $e) {
