@@ -69,6 +69,7 @@ class SysUserController extends BaseController
 
     /**
      * 获取用户列表
+     * @PreAuthorize(hasPermi = "system:user:add")
      */
     public function list(SysUserListRequest $sysUserListRequest): JsonResponse
     {

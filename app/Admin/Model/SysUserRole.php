@@ -60,4 +60,20 @@ class SysUserRole extends BaseModel
         return self::query()->whereIn('user_id', $userIds)->delete();
     }
 
+    /**
+     * 检查权限字符串
+     * @param int $userId
+     * @param string $permissionString
+     * @return bool
+     */
+    static function authenticationPermissionString(int $userId, string $permissionString): bool
+    {
+        return self::query()->from('sys_user_role as sur')->where('sur.user_id', $userId)
+            ->join('sys_role_menu as srm',function($query)use($permissionString){
+                $query->on('sur.role_id', '=', 'srm.role_id')->join('sys_menu as m',function($query)use($permissionString){
+                    $query->on('srm.menu_id', '=', 'm.menu_id')->where('m.perms',$permissionString);
+                });
+            })->exists();
+    }
+
 }
