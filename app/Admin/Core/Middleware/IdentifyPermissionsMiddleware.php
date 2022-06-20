@@ -45,7 +45,6 @@ class IdentifyPermissionsMiddleware
                     throw new ParametersException('您没有权限');
                 }
             }
-            //dd($doc);
         } catch (\ReflectionException $e) {
         }
         return $next($request);
