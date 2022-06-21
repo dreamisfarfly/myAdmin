@@ -31,13 +31,16 @@ class OperationLogMiddleware
             $method = $reflection->getMethod($classData[1]);
             $doc = $method->getDocComment();
             $responseJson = $response->getContent();
-            $responseArr = json_decode($responseJson, true);
-            $status = 0;
-            if($responseArr['code'] != 200){
-                $status = 1;
-            }
             if(preg_match('/@Log\(title\s=\s"?(.*?)"?,\sbusinessType\s=\s"?(.*?)\.(.*?)"?\)/',$doc, $res))
             {
+                $responseArr = json_decode($responseJson, true);
+                $status = 0;
+                if(!is_array($responseArr) || count($responseArr) == 0){
+                    return $response;
+                }
+                if($responseArr['code'] != 200){
+                    $status = 1;
+                }
                 if(count($res) != 4){
                     return $response;
                 }

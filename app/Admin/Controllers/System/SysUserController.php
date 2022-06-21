@@ -6,6 +6,7 @@ use App\Admin\Core\Constant\UserConstants;
 use App\Admin\Core\Controller\BaseController;
 use App\Admin\Core\Domain\AjaxResult;
 use App\Admin\Core\Exception\ParametersException;
+use App\Admin\Core\Exports\SysUserExport;
 use App\Admin\Core\Security\Authentication;
 use App\Admin\Core\Security\SecurityUtils;
 use App\Admin\Core\Security\TokenService;
@@ -23,6 +24,8 @@ use App\Admin\Service\System\ISysPostService;
 use App\Admin\Service\System\ISysRoleService;
 use App\Admin\Service\System\ISysUserService;
 use Illuminate\Http\JsonResponse;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
  * 用户信息
@@ -69,7 +72,7 @@ class SysUserController extends BaseController
 
     /**
      * 获取用户列表
-     * @PreAuthorize(hasPermi = "system:user:add")
+     * @PreAuthorize(hasPermi = "system:user:list")
      */
     public function list(SysUserListRequest $sysUserListRequest): JsonResponse
     {
@@ -159,11 +162,11 @@ class SysUserController extends BaseController
      * 修改用户
      * @ForbidSubmit
      * @Log(title = "用户管理", businessType = BusinessType.UPDATE)
+     * @PreAuthorize(hasPermi = "system:user:edit")
      * @throws ParametersException
      */
     public function edit(int $userId, EditSysUserRequest $editSysUserRequest): JsonResponse
     {
-        Authentication::hasPermit('system:user:edit');
         $this->sysUserService->checkUserAllowed($userId);
         $userInfo = $this->sysUserService->selectUserById($userId);
         null != $userInfo?$userName=$userInfo['userName']:$userName='未知用户';
@@ -184,24 +187,24 @@ class SysUserController extends BaseController
 
     /**
      * 删除用户
+     * @PreAuthorize(hasPermi = "system:user:remove")
      * @Log(title = "用户管理", businessType = BusinessType.DELETE)
      * @throws ParametersException
      */
     public function remove(string $ids): JsonResponse
     {
-        Authentication::hasPermit('system:user:remove');
         $ids = explode(',', $ids);
         return $this->toAjax($this->sysUserService->deleteUserByIds($ids));
     }
 
     /**
      * 重置密码
+     * @PreAuthorize(hasPermi = "system:user:resetPwd")
      * @Log(title = "用户管理", businessType = BusinessType.UPDATE)
      * @throws ParametersException
      */
     public function resetPwd(ResetSysUserPwdRequest $resetSysUserPwdRequest): JsonResponse
     {
-        Authentication::hasPermit('system:user:resetPwd');
         $sysUser = $resetSysUserPwdRequest->getParamsData(['userId', 'password']);
         $this->sysUserService->checkUserAllowed($sysUser['userId']);
         $sysUser['updateBy'] = SecurityUtils::getUsername();
@@ -211,16 +214,27 @@ class SysUserController extends BaseController
 
     /**
      * 状态修改
+     * @PreAuthorize(hasPermi = "system:user:edit")
      * @Log(title = "用户管理", businessType = BusinessType.UPDATE)
      * @throws ParametersException
      */
     public function changeStatus(SysUserChangeStatusRequest $sysUserChangeStatusRequest): JsonResponse
     {
-        Authentication::hasPermit('system:user:edit');
         $sysUser = $sysUserChangeStatusRequest->getParamsData(['userId', 'status']);
         $this->sysUserService->checkUserAllowed($sysUser['userId']);
         $sysUser['updateBy'] = SecurityUtils::getUsername();
         return $this->toAjax($this->sysUserService->updateUserStatus($sysUser['userId'], $sysUser));
+    }
+
+    /**
+     * 导出
+     * @PreAuthorize(hasPermi = "system:user:export")
+     * @Log(title = "用户管理", businessType = BusinessType.EXPORT)
+     * @return BinaryFileResponse
+     */
+    public function export(): BinaryFileResponse
+    {
+        return Excel::download(new SysUserExport(), '系统管理用户.xlsx');
     }
 
 }

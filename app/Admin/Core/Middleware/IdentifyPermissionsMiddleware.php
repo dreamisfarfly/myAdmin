@@ -47,8 +47,7 @@ class IdentifyPermissionsMiddleware
                     throw new AuthorityCertificationException();
                 }
             }
-        } catch (\ReflectionException $e) {
-        }
+        } catch (\ReflectionException $e) {}
         return $next($request);
     }
 

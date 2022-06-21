@@ -65,6 +65,11 @@ Route::prefix('/system/user')->group(function(){
     Route::put('/resetPwd', 'SysUserController@resetPwd');
 
     /**
+     * 导出
+     */
+    Route::post('/export', 'SysUserController@export');
+
+    /**
      * 删除用户
      */
     Route::delete('/{ids}','SysUserController@remove')
