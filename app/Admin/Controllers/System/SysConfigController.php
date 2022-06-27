@@ -38,12 +38,12 @@ class SysConfigController extends BaseController
     /**
      * 获取参数配置列表
      *
+     * @PreAuthorize(hasPermi = "system:config:list")
      * @param SysConfigListRequest $sysConfigListRequest
      * @return JsonResponse
      */
     public function list(SysConfigListRequest $sysConfigListRequest): JsonResponse
     {
-        Authentication::hasPermit('system:config:list');
         return $this->getDataTable(
             $this->sysConfigService
                 ->selectConfigList(
@@ -75,12 +75,12 @@ class SysConfigController extends BaseController
     /**
      * 根据参数编号获取详细信息
      *
+     * @PreAuthorize(hasPermi = "system:config:query")
      * @param int $configId
      * @return JsonResponse
      */
     public function getInfo(int $configId): JsonResponse
     {
-        Authentication::hasPermit('system:config:query');
         return (new AjaxResult())->success($this->sysConfigService->selectConfigById($configId));
     }
 
@@ -88,13 +88,13 @@ class SysConfigController extends BaseController
      * 新增参数配置
      *
      * @ForbidSubmit
+     * @PreAuthorize(hasPermi = "system:config:add")
      * @Log(title = "参数配置管理", businessType = BusinessType.INSERT)
      * @param SysConfigRequest $sysConfigRequest
      * @return JsonResponse
      */
     public function add(SysConfigRequest $sysConfigRequest): JsonResponse
     {
-        Authentication::hasPermit('system:config:add');
         $sysConfig = $sysConfigRequest->getParamsData(['configKey','configName','configType','configValue','remark']);
         if(UserConstants::NOT_UNIQUE == $this->sysConfigService->checkConfigKeyUnique($sysConfig['configName']))
         {
@@ -108,6 +108,7 @@ class SysConfigController extends BaseController
      * 修改参数配置
      *
      * @ForbidSubmit
+     * @PreAuthorize(hasPermi = "system:config:edit")
      * @Log(title = "参数配置管理", businessType = BusinessType.UPDATE)
      * @param int $configId
      * @param SysConfigRequest $sysConfigRequest
@@ -115,7 +116,6 @@ class SysConfigController extends BaseController
      */
     public function edit(int $configId, SysConfigRequest $sysConfigRequest): JsonResponse
     {
-        Authentication::hasPermit('system:config:edit');
         $sysConfig = $sysConfigRequest->getParamsData(['configKey','configName','configType','configValue','remark']);
         if(UserConstants::NOT_UNIQUE == $this->sysConfigService->checkConfigKeyUnique($sysConfig['configName'], $configId))
         {
@@ -128,6 +128,7 @@ class SysConfigController extends BaseController
     /**
      * 删除参数配置
      *
+     * @PreAuthorize(hasPermi = "system:config:remove")
      * @Log(title = "参数配置管理", businessType = BusinessType.DELETE)
      * @param string $configIds
      * @return JsonResponse
@@ -135,7 +136,6 @@ class SysConfigController extends BaseController
      */
     public function remove(string $configIds): JsonResponse
     {
-        Authentication::hasPermit('system:config:remove');
         $configIds = explode(',', $configIds);
         return $this->toAjax($this->sysConfigService->deleteConfigByIds($configIds));
     }
@@ -143,12 +143,12 @@ class SysConfigController extends BaseController
     /**
      * 清空缓存
      *
+     * @PreAuthorize(hasPermi = "system:config:remove")
      * @Log(title = "参数配置管理", businessType = BusinessType.CLEAN)
      * @return JsonResponse
      */
     public function clearCache(): JsonResponse
     {
-        Authentication::hasPermit('system:config:remove');
         $this->sysConfigService->clearCache();
         return (new AjaxResult())->success();
     }

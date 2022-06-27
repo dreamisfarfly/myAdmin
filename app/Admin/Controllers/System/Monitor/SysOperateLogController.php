@@ -33,10 +33,11 @@ class SysOperateLogController extends BaseController
 
     /**
      * 操作日志列表
+     *
+     * @PreAuthorize(hasPermi = "monitor:operlog:list")
      */
     public function list(): JsonResponse
     {
-        Authentication::hasPermit('monitor:operlog:list');
         return $this->getDataTable(
             $this->sysOperLogService->selectOperLogList([])
         );
@@ -45,11 +46,11 @@ class SysOperateLogController extends BaseController
     /**
      * 操作日志删除
      *
+     * @PreAuthorize(hasPermi = "monitor:operlog:remove")
      * @Log(title = "操作日志管理", businessType = BusinessType.DELETE)
      */
     public function remove(string $operIds): JsonResponse
     {
-        Authentication::hasPermit('monitor:operlog:remove');
         $operIds = explode(',', $operIds);
         return $this->toAjax($this->sysOperLogService->deleteOperLogByIds($operIds));
     }
@@ -57,11 +58,11 @@ class SysOperateLogController extends BaseController
     /**
      * 操作日志全部清除
      *
+     * @PreAuthorize(hasPermi = "monitor:operlog:remove")
      * @Log(title = "操作日志管理", businessType = BusinessType.CLEAN)
      */
     public function clean(): JsonResponse
     {
-        Authentication::hasPermit('monitor:operlog:remove');
         $this->sysOperLogService->cleanOperLog();
         return (new AjaxResult())->success();
     }

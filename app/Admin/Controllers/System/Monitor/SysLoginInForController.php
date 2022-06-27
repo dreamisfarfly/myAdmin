@@ -32,12 +32,12 @@ class SysLoginInForController extends BaseController
     /**
      * 列表
      *
+     * @PreAuthorize(hasPermi = "monitor:logininfor:list")
      * @param SysLoginInForListRequest $sysLoginInForListRequest
      * @return JsonResponse
      */
     public function list(SysLoginInForListRequest $sysLoginInForListRequest): JsonResponse
     {
-        Authentication::hasPermit('monitor:logininfor:list');
         return $this->getDataTable(
             $this->sysLoginInForService->selectLoginInForList(
                 $sysLoginInForListRequest->getParamsData(['ipaddr','userName','status','beginTime','endTime'])
@@ -48,13 +48,13 @@ class SysLoginInForController extends BaseController
     /**
      * 删除系统访问日志
      *
+     * @PreAuthorize(hasPermi = "monitor:logininfor:remove")
      * @Log(title = "登录日志管理", businessType = BusinessType.DELETE)
      * @param string $infoIds
      * @return JsonResponse
      */
     public function remove(string $infoIds): JsonResponse
     {
-        Authentication::hasPermit('monitor:logininfor:remove');
         $infoIds = explode(',', $infoIds);
         return $this->toAjax($this->sysLoginInForService->deleteLoginInForByIds($infoIds));
     }
@@ -62,12 +62,12 @@ class SysLoginInForController extends BaseController
     /**
      * 清空登录日志
      *
+     * @PreAuthorize(hasPermi = "monitor:logininfor:remove")
      * @Log(title = "登录日志管理", businessType = BusinessType.CLEAN)
      * @return JsonResponse
      */
     public function clean(): JsonResponse
     {
-        Authentication::hasPermit('monitor:logininfor:remove');
         $this->sysLoginInForService->cleanLoginInFor();
         return (new AjaxResult())->success();
     }

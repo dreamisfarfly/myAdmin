@@ -67,10 +67,11 @@ class SysRoleController extends BaseController
 
     /**
      * 角色列表
+     *
+     * @PreAuthorize(hasPermi = "system:role:list")
      */
     public function list(SysRoleListRequest $sysRoleListRequest): JsonResponse
     {
-        Authentication::hasPermit('system:role:list');
         return $this->getDataTable(
             $this->sysRoleService->selectRoleList(
                 $sysRoleListRequest->getParamsData(['roleName','roleKey','status','beginTime','endTime'])
@@ -80,10 +81,11 @@ class SysRoleController extends BaseController
 
     /**
      * 根据角色编号获取详细信息
+     *
+     * @PreAuthorize(hasPermi = "system:role:query")
      */
     public function getInfo(int $roleId): JsonResponse
     {
-        Authentication::hasPermit('system:role:query');
         return (new AjaxResult())
             ->success(
                 $this->sysRoleService->selectRoleById($roleId)
@@ -93,11 +95,11 @@ class SysRoleController extends BaseController
     /**
      * 新增角色
      * @ForbidSubmit
+     * @PreAuthorize(hasPermi = "system:role:add")
      * @Log(title = "角色管理", businessType = BusinessType.INSERT)
      */
     public function add(SysRoleRequest $sysRoleRequest): JsonResponse
     {
-        Authentication::hasPermit('system:role:add');
         $sysRole = $sysRoleRequest->getParamsData(['deptCheckStrictly', 'deptIds', 'menuCheckStrictly', 'menuIds', 'remark', 'roleKey', 'roleName', 'roleSort', 'status']);
         if(UserConstants::NOT_UNIQUE == $this->sysRoleService->checkAssignUnique(['roleName'=>$sysRole['roleName']]))
         {
@@ -116,11 +118,11 @@ class SysRoleController extends BaseController
     /**
      * 修改保存角色
      * @ForbidSubmit
+     * @PreAuthorize(hasPermi = "system:role:edit")
      * @Log(title = "角色管理", businessType = BusinessType.UPDATE)
      */
     public function edit(int $roleId, SysRoleRequest $sysRoleRequest): JsonResponse
     {
-        Authentication::hasPermit('system:role:edit');
         $sysRole = $sysRoleRequest->getParamsData(['deptCheckStrictly', 'deptIds', 'menuCheckStrictly', 'menuIds', 'remark', 'roleKey', 'roleName', 'roleSort', 'status']);
         if(UserConstants::NOT_UNIQUE == $this->sysRoleService->checkAssignUnique(['roleName'=>$sysRole['roleName']],$roleId))
         {
@@ -159,12 +161,12 @@ class SysRoleController extends BaseController
 
     /**
      * 状态修改
+     * @PreAuthorize(hasPermi = "system:role:edit")
      * @Log(title = "角色管理", businessType = BusinessType.UPDATE)
      * @throws ParametersException
      */
     public function changeStatus(SysRoleChangeStatusRequest $sysRoleChangeStatusRequest): JsonResponse
     {
-        Authentication::hasPermit('system:role:edit');
         $sysRole = $sysRoleChangeStatusRequest->getParamsData(['roleId', 'status']);
         $this->sysRoleService->checkRoleAllowed($sysRole['roleId']);
         $loginUser = $this->tokenService->getLoginUser();
@@ -174,22 +176,23 @@ class SysRoleController extends BaseController
 
     /**
      * 删除角色
+     * @PreAuthorize(hasPermi = "system:role:remove")
      * @Log(title = "角色管理", businessType = BusinessType.DELETE)
      * @throws ParametersException
      */
     public function remove(string $roleIds): JsonResponse
     {
-        Authentication::hasPermit('system:role:remove');
         $ids = explode(',', $roleIds);
         return $this->toAjax($this->sysRoleService->deleteRoleByIds($ids));
     }
 
     /**
      * 获取角色选择框列表
+     * @PreAuthorize(hasPermi = "system:role:query")
      */
     public function optionSelect()
     {
-        Authentication::hasPermit('system:role:query');
+
     }
 
 }

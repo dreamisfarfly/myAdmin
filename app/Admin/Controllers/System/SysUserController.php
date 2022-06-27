@@ -76,7 +76,6 @@ class SysUserController extends BaseController
      */
     public function list(SysUserListRequest $sysUserListRequest): JsonResponse
     {
-        Authentication::hasPermit('system:user:list');
         return $this->getDataTable(
             $this->sysUserService->selectUserList(
                 $sysUserListRequest->getParamsData([
@@ -93,10 +92,10 @@ class SysUserController extends BaseController
 
     /**
      * 根据用户编号获取详细信息
+     * @PreAuthorize(hasPermi = "system:user:query")
      */
     public function getInfo(int $userId = null): JsonResponse
     {
-        Authentication::hasPermit('system:user:query');
         $rolesList = $this->sysRoleService->selectRoleAll();
         $ajax = new AjaxResult();
         if(SecurityUtils::isAdmin($userId))

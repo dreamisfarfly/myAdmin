@@ -37,10 +37,11 @@ class SysMenuController extends BaseController
 
     /**
      * 获取菜单列表
+     *
+     * @PreAuthorize(hasPermi = "system:menu:list")
      */
     public function list(SysMenuListRequest $sysMenuListRequest): JsonResponse
     {
-        Authentication::hasPermit('system:menu:list');
         $loginUser = SecurityUtils::getLoginUser();
         $userId = $loginUser['sysUser']['userId'];
         return (new AjaxResult())
@@ -51,10 +52,11 @@ class SysMenuController extends BaseController
 
     /**
      * 根据菜单编号获取详细信息
+     *
+     * @PreAuthorize(hasPermi = "system:menu:query")
      */
     public function getInfo(int $menuId): JsonResponse
     {
-        Authentication::hasPermit('system:menu:query');
         return (new AjaxResult())->success($this->sysMenuService->selectMenuById($menuId));
     }
 
@@ -90,12 +92,12 @@ class SysMenuController extends BaseController
     /**
      * 新增菜单
      * @ForbidSubmit
+     * @PreAuthorize(hasPermi = "system:menu:add")
      * @Log(title = "菜单管理", businessType = BusinessType.INSERT)
      * @throws ParametersException
      */
     public function add(SysMenuRequest $sysMenuRequest): JsonResponse
     {
-        Authentication::hasPermit('system:menu:add');
         $sysMenu = self::getRequestParam($sysMenuRequest);
         if(UserConstants::NOT_UNIQUE == $this->sysMenuService->checkMenuNameUnique($sysMenu))
         {
@@ -112,12 +114,12 @@ class SysMenuController extends BaseController
     /**
      * 修改菜单
      * @ForbidSubmit
+     * @PreAuthorize(hasPermi = "system:menu:edit")
      * @Log(title = "菜单管理", businessType = BusinessType.UPDATE)
      * @throws ParametersException
      */
     public function edit(int $menuId, SysMenuRequest $sysMenuRequest): JsonResponse
     {
-        Authentication::hasPermit('system:menu:edit');
         $sysMenu = self::getRequestParam($sysMenuRequest);
         if(UserConstants::NOT_UNIQUE == $this->sysMenuService->checkMenuNameUnique($sysMenu, $menuId))
         {
@@ -137,11 +139,11 @@ class SysMenuController extends BaseController
 
     /**
      * 删除菜单
+     * @PreAuthorize(hasPermi = "system:menu:remove")
      * @Log(title = "菜单管理", businessType = BusinessType.DELETE)
      */
     public function remove(int $menuId): JsonResponse
     {
-        Authentication::hasPermit('system:menu:remove');
         if($this->sysMenuService->hasChildByMenuId($menuId))
         {
             return (new AjaxResult())->error('存在子菜单,不允许删除');

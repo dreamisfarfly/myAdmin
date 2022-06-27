@@ -36,10 +36,11 @@ class SysUserOnlineController extends BaseController
 
     /**
      * 在线用户列表
+     *
+     * @PreAuthorize(hasPermi = "monitor:online:list")
      */
     public function list(BaseQueryRequest $baseQueryRequest)
     {
-        Authentication::hasPermit('monitor:online:list');
         return $this->sysUserOnlineService->loginUserToUserOnline(
             $baseQueryRequest->getParamsData(['userName','ipaddr'])
         );
@@ -48,11 +49,11 @@ class SysUserOnlineController extends BaseController
     /**
      * 强退用户
      *
+     * @PreAuthorize(hasPermi = "monitor:online:forceLogout")
      * @Log(title = "在线用户监控管理", businessType = BusinessType.FORCE)
      */
     public function forceLogout(string $tokenId): JsonResponse
     {
-        Authentication::hasPermit('monitor:online:forceLogout');
         Redis::delete(Constants::LOGIN_TOKEN_KEY.$tokenId);
         return (new AjaxResult())->success();
     }

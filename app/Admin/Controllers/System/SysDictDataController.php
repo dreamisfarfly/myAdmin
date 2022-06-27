@@ -45,10 +45,11 @@ class SysDictDataController extends BaseController
 
     /**
      * 字典数据列表
+     *
+     * @PreAuthorize(hasPermi = "system:dict:list")
      */
     public function list(SysDictDataListRequest $sysDictDataListRequest): JsonResponse
     {
-        Authentication::hasPermit('system:dict:list');
         return $this->getDataTable(
             $this->sysDictDataService->selectDictDataList(
                 $sysDictDataListRequest->getParamsData(['dictType','status','dictLabel'])
@@ -58,10 +59,11 @@ class SysDictDataController extends BaseController
 
     /**
      * 查询字典数据详细
+     *
+     * @PreAuthorize(hasPermi = "system:dict:query")
      */
     public function getInfo(int $dictCode): JsonResponse
     {
-        Authentication::hasPermit('system:dict:query');
         return (new AjaxResult())->success($this->sysDictDataService->selectDictDataById($dictCode));
     }
 
@@ -78,11 +80,11 @@ class SysDictDataController extends BaseController
      * 新增字典类型
      *
      * @ForbidSubmit
+     * @PreAuthorize(hasPermi = "system:dict:add")
      * @Log(title = "字典数据管理", businessType = BusinessType.INSERT)
      */
     public function add(SysDictDataRequest $sysDictDataRequest): JsonResponse
     {
-        Authentication::hasPermit('system:dict:add');
         $sysDictData = $sysDictDataRequest->getParamsData(['cssClass','dictLabel','dictSort','dictType','dictValue','listClass','remark','status']);
         if(!$this->sysDictTypeService->checkDictTypeExist($sysDictData['dictType']))
         {
@@ -106,11 +108,11 @@ class SysDictDataController extends BaseController
      * 修改保存字典类型
      *
      * @ForbidSubmit
+     * @PreAuthorize(hasPermi = "system:dict:edit")
      * @Log(title = "字典数据管理", businessType = BusinessType.UPDATE)
      */
     public function edit(int $dictCode, SysDictDataRequest $sysDictDataRequest): JsonResponse
     {
-        Authentication::hasPermit('system:dict:edit');
         $sysDictData = $sysDictDataRequest->getParamsData(['cssClass','dictLabel','dictSort','dictType','dictValue','listClass','remark','status']);
         if(!$this->sysDictTypeService->checkDictTypeExist($sysDictData['dictType']))
         {
@@ -133,11 +135,11 @@ class SysDictDataController extends BaseController
     /**
      * 删除保存字典类型
      *
+     * @PreAuthorize(hasPermi = "system:dict:remove")
      * @Log(title = "字典数据管理", businessType = BusinessType.DELETE)
      */
     public function remove(string $ids): JsonResponse
     {
-        Authentication::hasPermit('system:dict:remove');
         $ids = explode(',', $ids);
         return $this->toAjax($this->sysDictDataService->deleteDictDataByIds($ids));
     }

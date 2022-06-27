@@ -38,12 +38,12 @@ class SysPostController extends BaseController
     /**
      * 获取岗位列表
      *
+     * @PreAuthorize(hasPermi = "system:post:query")
      * @param SysPostListRequest $sysPostListRequest
      * @return JsonResponse
      */
     public function list(SysPostListRequest $sysPostListRequest): JsonResponse
     {
-        Authentication::hasPermit('system:post:query');
         return $this->getDataTable(
             $this->sysPostService->selectPostList($sysPostListRequest->getParamsData(['postCode','postName','status']))
         );
@@ -52,12 +52,12 @@ class SysPostController extends BaseController
     /**
      * 根据岗位编号获取详细信息
      *
+     * @PreAuthorize(hasPermi = "system:post:query")
      * @param int $postId
      * @return JsonResponse
      */
     public function getInfo(int $postId): JsonResponse
     {
-        Authentication::hasPermit('system:post:query');
         return (new AjaxResult())->success($this->sysPostService->selectPostById($postId));
     }
 
@@ -65,13 +65,13 @@ class SysPostController extends BaseController
      * 新增岗位
      *
      * @ForbidSubmit
+     * @PreAuthorize(hasPermi = "system:post:add")
      * @Log(title = "岗位管理", businessType = BusinessType.INSERT)
      * @param SysPostRequest $sysPostRequest
      * @return JsonResponse
      */
     public function add(SysPostRequest $sysPostRequest): JsonResponse
     {
-        Authentication::hasPermit('system:post:add');
         $sysPost = $sysPostRequest->getParamsData(['postName','postCode','postSort','remark','status']);
         if(UserConstants::NOT_UNIQUE == $this->sysPostService->checkPostUnique(['postName'=>$sysPost['postName']]))
         {
@@ -89,6 +89,7 @@ class SysPostController extends BaseController
      * 修改岗位
      *
      * @ForbidSubmit
+     * @PreAuthorize(hasPermi = "system:post:edit")
      * @Log(title = "岗位管理", businessType = BusinessType.UPDATE)
      * @param int $postId
      * @param SysPostRequest $sysPostRequest
@@ -96,7 +97,6 @@ class SysPostController extends BaseController
      */
     public function edit(int $postId, SysPostRequest $sysPostRequest): JsonResponse
     {
-        Authentication::hasPermit('system:post:edit');
         $sysPost = $sysPostRequest->getParamsData(['postName','postCode','postSort','remark','status']);
         if(UserConstants::NOT_UNIQUE == $this->sysPostService->checkPostUnique(['postName'=>$sysPost['postName']],$postId))
         {
@@ -113,6 +113,7 @@ class SysPostController extends BaseController
     /**
      * 删除岗位
      *
+     * @PreAuthorize(hasPermi = "system:post:remove")
      * @Log(title = "岗位管理", businessType = BusinessType.DELETE)
      * @param string $ids
      * @return JsonResponse
@@ -120,7 +121,6 @@ class SysPostController extends BaseController
      */
     public function remove(string $ids): JsonResponse
     {
-        Authentication::hasPermit('system:post:remove');
         $ids = explode(',', $ids);
         return $this->toAjax($this->sysPostService->deletePostByIds($ids));
     }

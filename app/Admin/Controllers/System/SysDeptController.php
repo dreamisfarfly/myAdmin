@@ -39,10 +39,11 @@ class SysDeptController extends BaseController
 
     /**
      * 获取部门列表
+     *
+     * @PreAuthorize(hasPermi = "system:dept:list")
      */
     public function list(SysDeptListRequest $sysDeptListRequest): JsonResponse
     {
-        Authentication::hasPermit('system:dept:list');
         return (new AjaxResult())
             ->success(
                 $this->sysDeptService->selectDeptList($sysDeptListRequest->getParamsData(['deptName','status']))
@@ -51,10 +52,11 @@ class SysDeptController extends BaseController
 
     /**
      * 查询部门列表（排除节点）
+     *
+     * @PreAuthorize(hasPermi = "system:dept:list")
      */
     public function excludeChild(int $deptId = 0): JsonResponse
     {
-        Authentication::hasPermit('system:dept:list');
         $deps = $this->sysDeptService->selectDeptList();
         $data = [];
         foreach ($deps as $key => $item)
@@ -70,10 +72,11 @@ class SysDeptController extends BaseController
 
     /**
      * 根据部门编号获取详细信息
+     *
+     * @PreAuthorize(hasPermi = "system:dept:query")
      */
     public function getInfo(int $deptId): JsonResponse
     {
-        Authentication::hasPermit('system:dept:query');
         return (new AjaxResult())->success($this->sysDeptService->selectDeptById($deptId));
     }
 
@@ -100,12 +103,12 @@ class SysDeptController extends BaseController
     /**
      * 新增部门
      * @ForbidSubmit
+     * @PreAuthorize(hasPermi = "system:dept:add")
      * @Log(title = "部门管理", businessType = BusinessType.INSERT)
      * @throws ParametersException
      */
     public function add(SysDeptRequest $sysDeptRequest): JsonResponse
     {
-        Authentication::hasPermit('system:dept:add');
         $sysDept = $sysDeptRequest->getParamsData(['ancestors','deptName','email','leader','orderNum','parentId','phone','status']);
         if(UserConstants::NOT_UNIQUE == $this->sysDeptService->checkDeptUnique($sysDept))
         {
@@ -118,11 +121,11 @@ class SysDeptController extends BaseController
     /**
      * 修改部门
      * @ForbidSubmit
+     * @PreAuthorize(hasPermi = "system:dept:edit")
      * @Log(title = "部门管理", businessType = BusinessType.UPDATE)
      */
     public function edit(int $deptId, SysDeptRequest $sysDeptRequest): JsonResponse
     {
-        Authentication::hasPermit('system:dept:edit');
         $sysDept = $sysDeptRequest->getParamsData(['ancestors','deptName','email','leader','orderNum','parentId','phone','status']);
         if(UserConstants::NOT_UNIQUE == $this->sysDeptService->checkDeptUnique($sysDept,$deptId))
         {
@@ -142,11 +145,11 @@ class SysDeptController extends BaseController
 
     /**
      * 删除部门
+     * @PreAuthorize(hasPermi = "system:dept:remove")
      * @Log(title = "部门管理", businessType = BusinessType.DELETE)
      */
     public function remove(int $deptId): JsonResponse
     {
-        Authentication::hasPermit('system:dept:remove');
         if($this->sysDeptService->hasChildByDeptId($deptId))
             return (new AjaxResult())->error('存在下级部门,不允许删除');
         if($this->sysDeptService->checkDeptExistUser($deptId))
